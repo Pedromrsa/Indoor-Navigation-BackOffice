@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\IndoorMappingWebsite.bundle.scp.css",
+      "PackagePath": "staticwebassets\\IndoorMappingWebsite.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.IndoorMappingWebsite.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.IndoorMappingWebsite.props",
+      "PackagePath": "build\\IndoorMappingWebsite.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.IndoorMappingWebsite.props",
+      "PackagePath": "buildMultiTargeting\\IndoorMappingWebsite.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.IndoorMappingWebsite.props",
+      "PackagePath": "buildTransitive\\IndoorMappingWebsite.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
