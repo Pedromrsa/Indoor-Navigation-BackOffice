@@ -1,0 +1,234 @@
+﻿@page "/pathstable"
+@attribute [StreamRendering]
+
+<PageTitle>pathstable</PageTitle>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Navbar Styles */
+    .navbarList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: darkred;
+        padding: 0 20px;
+        list-style: none;
+        margin: 0;
+        height: 60px;
+    }
+
+    .logo a {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .navbarItem {
+        margin-left: 15px;
+    }
+
+        .navbarItem a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+            .navbarItem a:hover:not(.active) {
+                background-color: #540000;
+            }
+
+            .navbarItem a.active {
+                background-color: gray;
+            }
+
+    /* Center container and buttons */
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .center-container h1 {
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: #343a40;
+        }
+
+    /* Filter input */
+    .search-bar {
+        margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 500px;
+    }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 1.1rem;
+        }
+
+    /* Table Container */
+    .table-container {
+        width: 80%;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        padding: 0;
+    }
+
+    th, td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    th {
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: darkred;
+    }
+
+    button {
+        width: 80px;
+    }
+
+    .addbtn {
+        background-color: darkred;
+        position: sticky;
+        bottom: 0;
+    }
+
+    input {
+        text-align: center;
+    }
+</style>
+
+<ul class="navbarList">
+    <li class="logo"><a href="">IndoorMap</a></li>
+    <div style="display: flex;">
+    <li class="navbarItem"><a href="">Home</a></li>
+    <li class="navbarItem"><a href="usertable">Users</a></li>
+    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+    <li class="navbarItem"><a class="active" href="pathstable">Paths</a></li>
+    <li class="navbarItem"><a href="logstable">Logs</a></li>
+    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+    </div>
+</ul>
+
+<div class="center-container">
+    <h1>Paths Table</h1>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+        <input type="text" @oninput="OnSearchInput" placeholder="Search by origin, destiny, distance, or accessibility..." class="form-control" />
+    </div>
+
+    <!-- Table with Filtered Data inside a Scrollable Container -->
+    <div class="table-container">
+        <table class="table table-striped m-0">
+            <thead>
+                <tr>
+                    <th>Origin</th>
+                    <th>Destiny</th>
+                    <th>Distance</th>
+                    <th>Accessibility</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var person in FilteredPeople)
+                {
+                    <tr>
+                        <td>@person.OriginID</td>
+                        <td>@person.DestinyID</td>
+                        <td>@(person.Distance)m</td>
+                        <td>@person.Accessibility</td>
+                        <td><button type="button" class="btn btn-primary">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                    </tr>
+                }
+                <tr class="addbtn">
+                    <td><input class="form-control" placeholder="Insira a Origem..." /></td>
+                    <td><input class="form-control" placeholder="Insira o Destino..." /></td>
+                    <td><input class="form-control" placeholder="Insira a Distância..." /></td>
+                    <td><input class="form-control" placeholder="Insira a Acessibilidade..." /></td>
+                    <td></td>
+                    <td><button type="button" class="btn btn-success">Add</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    // Sample data for the table
+    private List<Route> routes = new List<Route>
+{
+    new Route { OriginID = "Entrada ISEP 1", DestinyID = "Entrada B", Distance = 500, Accessibility = "Available" },
+    new Route { OriginID = "1ºPiso B Oeste", DestinyID = "2ºPiso B Oeste", Distance = 50, Accessibility = "Obstructed" },
+    new Route { OriginID = "Entrada B", DestinyID = "1ºPiso B Este", Distance = 300, Accessibility = "Available" },
+    new Route { OriginID = "2ºPiso B Este", DestinyID = "Biblioteca", Distance = 200, Accessibility = "Available" },
+    new Route { OriginID = "Laboratório A", DestinyID = "Sala de Reuniões", Distance = 100, Accessibility = "Obstructed" },
+    new Route { OriginID = "Cafetaria", DestinyID = "Entrada ISEP 1", Distance = 150, Accessibility = "Available" },
+    new Route { OriginID = "1ºPiso B Este", DestinyID = "2ºPiso B Este", Distance = 60, Accessibility = "Obstructed" },
+    new Route { OriginID = "Corredor Principal", DestinyID = "Biblioteca", Distance = 180, Accessibility = "Available" }
+};
+
+
+
+    // The search query from the input
+    private string searchQuery = string.Empty;
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+    }
+
+    // Get the filtered people based on the search query
+    private IEnumerable<Route> FilteredPeople =>
+        routes.Where(p => p.OriginID.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.DestinyID.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.Distance.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.Accessibility.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    // Person model for the table data
+    public class Route
+    {
+        public string OriginID { get; set; }
+        public string DestinyID { get; set; }
+        public double Distance { get; set; }
+        public string Accessibility { get; set; }
+    }
+}

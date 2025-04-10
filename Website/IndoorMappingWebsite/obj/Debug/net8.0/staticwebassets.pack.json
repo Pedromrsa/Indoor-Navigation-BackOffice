@@ -1,24 +1,28 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\IndoorMappingWebsite.bundle.scp.css",
-      "PackagePath": "staticwebassets\\IndoorMappingWebsite.bundle.scp.css"
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\IndoorMappingWebsite.bundle.scp.css",
+      "PackagePath": "staticwebassets\\IndoorMappingWebsite.951wh8ellq.bundle.scp.css"
     },
     {
-      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\app.css",
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
     {
-      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Id": "C:\\Users\\pedro\\Desktop\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\favicon.png",
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.IndoorMappingWebsite.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.IndoorMappingWebsite.Microsoft.AspNetCore.StaticWebAssets.props",

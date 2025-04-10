@@ -1,0 +1,234 @@
+﻿@page "/usertable"
+@attribute [StreamRendering]
+@using System.Linq
+
+<PageTitle>Users Table</PageTitle>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Navbar Styles */
+    .navbarList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: darkred;
+        padding: 0 20px;
+        list-style: none;
+        margin: 0;
+        height: 60px;
+    }
+
+    .logo a {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .navbarItem {
+        margin-left: 15px;
+    }
+
+        .navbarItem a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+            .navbarItem a:hover:not(.active) {
+                background-color: #540000;
+            }
+
+            .navbarItem a.active {
+                background-color: gray;
+            }
+
+    /* Center container and buttons */
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .center-container h1 {
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: #343a40;
+        }
+
+    /* Filter input */
+    .search-bar {
+        margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 500px;
+    }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 1.1rem;
+        }
+    
+    /* Table Container */
+    .table-container {
+        width: 80%;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        padding: 0;
+    }
+    th, td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    th {
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    thead{
+        position: sticky;
+        top: 0;
+        background-color: darkred;
+    }
+    button
+    {
+        width: 80px;
+    }
+    .addbtn{
+        background-color: darkred;
+        position: sticky;
+        bottom: 0;
+    }
+    input{
+        text-align: center;
+    }
+</style>
+
+<!-- Navbar -->
+<ul class="navbarList">
+    <li class="logo"><a href="">IndoorMap</a></li>
+    <div style="display: flex;">
+    <li class="navbarItem"><a href="">Home</a></li>
+    <li class="navbarItem"><a class="active" href="usertable">Users</a></li>
+    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+    <li class="navbarItem"><a href="pathstable">Paths</a></li>
+    <li class="navbarItem"><a href="logstable">Logs</a></li>
+    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+    </div>
+</ul>
+
+<div class="center-container">
+    <h1>Users Table</h1>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+        <input type="text" @oninput="OnSearchInput" placeholder="Search by name, email, or type..." class="form-control" />
+    </div>
+
+    <!-- Table with Filtered Data inside a Scrollable Container -->
+    <div class="table-container">
+        <table class="table table-striped m-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var person in FilteredPeople)
+                {
+                    <tr>
+                        <td>@person.Name</td>
+                        <td>@person.Email</td>
+                        <td>@person.Type</td>
+                        <td><button type="button" class="btn btn-primary">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                    </tr>
+                }
+                <tr class="addbtn">
+                    <td><input class="form-control" placeholder="Insira o nome..." /></td>
+                    <td><input class="form-control" placeholder="Insira o email..." /></td>
+                    <td><input class="form-control" placeholder="Insira o tipo..." /></td>
+                    <td></td>
+                    <td><button type="button" class="btn btn-success">Add</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    // Sample data for the table
+    private List<Person> people = new List<Person>
+    {
+        new Person { Name = "John", Email = "John@mail", Type = "Tetraplegic" },
+        new Person { Name = "Jane", Email = "Jane@mail", Type = "Admin" },
+        new Person { Name = "Michael", Email = "Michael@mail", Type = "Paraplegic" },
+        new Person { Name = "Sara", Email = "Sara@mail", Type = "User" },
+        new Person { Name = "Tom", Email = "Tom@mail", Type = "Paraplegic" },
+        new Person { Name = "Emily", Email = "Emily@mail", Type = "User" },
+        new Person { Name = "Robert", Email = "Robert@mail", Type = "Admin" },
+        new Person { Name = "Linda", Email = "Linda@mail", Type = "Tetraplegic" },
+        new Person { Name = "David", Email = "David@mail", Type = "Paraplegic" },
+        new Person { Name = "Sophia", Email = "Sophia@mail", Type = "User" },
+        new Person { Name = "Chris", Email = "Chris@mail", Type = "Tetraplegic" },
+        new Person { Name = "Karen", Email = "Karen@mail", Type = "Admin" },
+        new Person { Name = "Jason", Email = "Jason@mail", Type = "User" },
+        new Person { Name = "Angela", Email = "Angela@mail", Type = "Paraplegic" },
+        new Person { Name = "Steve", Email = "Steve@mail", Type = "Admin" }
+    };
+
+
+    // The search query from the input
+    private string searchQuery = string.Empty;
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+    }
+
+    // Get the filtered people based on the search query
+    private IEnumerable<Person> FilteredPeople =>
+        people.Where(p => p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.Type.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    // Person model for the table data
+    public class Person
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Type { get; set; }
+    }
+}

@@ -1,7 +1,106 @@
 ﻿@page "/"
-
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
 
-Welcome to your new app.
+    .navbarList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: darkred;
+        padding: 0 20px;
+        list-style: none;
+        margin: 0;
+        height: 60px;
+    }
+
+    .logo a {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .navbarItem {
+        margin-left: 15px;
+    }
+
+        .navbarItem a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+            .navbarItem a:hover:not(.active) {
+                background-color: #540000;
+            }
+
+            .navbarItem a.active {
+                background-color: gray;
+            }
+
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 60px); 
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .center-container h1 {
+            margin-bottom: 3rem;
+        }
+    .vertical-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        max-width: 500px;
+        gap: clamp(1rem, 4vw, 2rem);
+    }
+
+        .vertical-buttons button {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            padding: clamp(0.75rem, 2vw, 1.5rem);
+            border-radius: 12px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+            .vertical-buttons button:hover {
+                background-color: #495057;
+                color: white;
+            }
+</style>
+
+<ul class="navbarList">
+    <li class="logo"><a href="">IndoorMap</a></li>
+</ul>
+
+<div class="center-container">
+    <h1>Data Tables</h1>
+    <div class="vertical-buttons">
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("usertable"))">Users</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("beaconstable"))">Beacons</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("pathstable"))">Paths</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("logstable"))">Logs</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("accessibilitytable"))">Accessibility</button>
+    </div>
+</div>
+
+@code {
+    private void Navigate(string page)
+    {
+        NavigationManager.NavigateTo(page);  // A URL para a qual você quer navegar
+    }
+}
