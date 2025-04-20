@@ -1,0 +1,98 @@
+﻿
+@page "/map"
+@inject IJSRuntime JSRuntime
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Navbar Styles */
+    .navbarList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: darkred;
+        padding: 0 20px;
+        list-style: none;
+        margin: 0;
+        height: 60px;
+    }
+
+    .logo a {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .navbarItem {
+        margin-left: 15px;
+    }
+
+        .navbarItem a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+            .navbarItem a:hover:not(.active) {
+                background-color: #540000;
+            }
+
+            .navbarItem a.active {
+                background-color: gray;
+            }
+
+</style>
+
+
+<!-- Navbar -->
+<ul class="navbarList">
+    <li class="logo"><a href="">IndoorMap</a></li>
+    <div style="display: flex;">
+    <li class="navbarItem"><a class="active" href="map">Map</a></li>
+    <li class="navbarItem"><a href="usertable">Users</a></li>
+    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+    <li class="navbarItem"><a href="pathstable">Paths</a></li>
+    <li class="navbarItem"><a href="logstable">Logs</a></li>
+    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+    </div>
+</ul>
+
+<div id="map" style="width: 100%; height: calc(100vh - 60px); border: 1px solid #ccc;"></div>
+
+@code {
+    /*
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initMap");
+        }
+    }*/
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (firstRender)
+            {
+                // Carregar o arquivo JavaScript dinamicamente
+                await JSRuntime.InvokeVoidAsync("eval", @"
+                var script = document.createElement('script');
+                script.src = 'js/openlayers-init.js';
+                script.onload = function() {
+                    // Chama a função initMap após o script ser carregado
+                    loadScripts();
+                };
+                document.head.appendChild(script);
+            ");
+            }
+        }
+    }
+}
