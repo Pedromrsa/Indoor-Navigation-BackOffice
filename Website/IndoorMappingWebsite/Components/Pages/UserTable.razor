@@ -1,6 +1,9 @@
 ﻿@page "/usertable"
 @attribute [StreamRendering]
 @using System.Linq
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
+@inject IUserService UserService
 
 <PageTitle>Users Table</PageTitle>
 
@@ -177,12 +180,20 @@
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><input class="form-control" placeholder="Insira o nome..." /></td>
-                    <td><input class="form-control" placeholder="Insira o email..." /></td>
-                    <td><input class="form-control" placeholder="Insira o tipo..." /></td>
+                    <td><InputText class="form-control" placeholder="Insira o nome..." @bind-Value="newUser.nome" /></td>
+                    <td><InputText class="form-control" placeholder="Insira o email..." @bind-Value="newUser.email" /></td>
+                    <td><InputText class="form-control" placeholder="Insira a passe..." @bind-Value="newUser.password" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insira o tipo..." @bind-Value="newUser.tipoId" /></td>
                     <td></td>
-                    <td><button type="button" class="btn btn-success">Add</button></td>
+                    @if (!string.IsNullOrEmpty(message))
+                    {
+                        <p class="mt-3">@message</p>
+                    }
+                    <td></td>
+                    <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
+					
                 </tr>
+				
             </tbody>
         </table>
     </div>
@@ -231,4 +242,18 @@
         public string Email { get; set; }
         public string Type { get; set; }
     }
+
+
+    private User newUser = new();
+    private string message;
+
+    public async Task HandleValidSubmit()
+    {
+        var success = await UserService.CreateUserAsync(newUser);
+        message = success ? "Utilizador criado com sucesso!" : "Erro ao criar utilizador.";
+
+        if (success)
+            newUser = new(); // limpa o form
+    }
+
 }

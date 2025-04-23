@@ -1,4 +1,5 @@
 using IndoorMappingWebsite.Components;
+using IndoorMappingWebsite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ builder.Services.AddRazorComponents()
     {
         options.DetailedErrors = true;  // Habilita erros detalhados
     });
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<HttpClient>(sp =>
+    new HttpClient { BaseAddress = new Uri("https://isepindoornavigationapi-vgq7.onrender.com") });
 
 var app = builder.Build();
 
