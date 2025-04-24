@@ -12,6 +12,9 @@ builder.Services.AddRazorComponents()
     });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBeaconService, BeaconService>();
+builder.Services.AddScoped<IPathService, PathService>();
+builder.Services.AddScoped<IAccessibilityService, AccessibilityService>();
 builder.Services.AddScoped<HttpClient>(sp =>
     new HttpClient { BaseAddress = new Uri("https://isepindoornavigationapi-vgq7.onrender.com") });
 
