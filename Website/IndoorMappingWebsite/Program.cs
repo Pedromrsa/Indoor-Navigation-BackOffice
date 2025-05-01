@@ -12,6 +12,7 @@ builder.Services.AddRazorComponents()
     });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IBeaconService, BeaconService>();
 builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IAccessibilityService, AccessibilityService>();

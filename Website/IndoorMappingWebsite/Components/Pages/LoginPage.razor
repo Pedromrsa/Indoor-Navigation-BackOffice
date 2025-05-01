@@ -1,0 +1,138 @@
+﻿@page "/"
+@using System.ComponentModel.DataAnnotations
+@using IndoorMappingWebsite.Services
+
+@inject NavigationManager NavigationManager
+@inject ILoginService LoginService
+
+<style>
+    .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: white; /* Fundo geral um pouco cinza claro */
+    }
+
+    .login-box {
+    background-color: #999999; /* Cinza escuro */
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border: 2px solid black;
+    }
+
+    .login-box h3 {
+    color: black;
+    margin-bottom: 30px;
+    }
+
+    .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    }
+
+    label {
+    color: black;
+    margin-bottom: 5px;
+    display: block;
+    }
+
+    .form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+    color: white;
+    border: none;
+    }
+
+    .btn-login {
+    background-color: #8b0000; /* Vermelho escuro */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    }
+
+    .btn-login:hover {
+    background-color: #660000; /* Vermelho ainda mais escuro no hover */
+    }
+
+    .forgot-password {
+    margin-top: 20px;
+    font-size: 0.9em;
+    }
+
+    .forgot-password a {
+    color: #0a1172;
+    text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+    text-decoration: underline;
+    }
+</style>
+
+<PageTitle>Login</PageTitle>
+
+<div class="login-container">
+    <div class="login-box">
+        <h3>Login</h3>
+
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+
+
+            <div class="form-group">
+                <label for="username">Email</label>
+                <InputText id="username" class="form-control" @bind-Value="loginModel.Email" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+            </div>
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="forgot-password">
+                <a href="/">forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-login">Login</button>
+
+
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task HandleLogin()
+    {
+        NavigationManager.NavigateTo("/home");
+        /*
+        if(LoginService.LoginAsync(loginModel.Email,loginModel.Password)!= null)
+        {
+            NavigationManager.NavigateTo("/home");
+        }*/
+        
+    }
+
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "Email is necessary.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is necessary.")]
+        public string Password { get; set; }
+    }
+
+}
