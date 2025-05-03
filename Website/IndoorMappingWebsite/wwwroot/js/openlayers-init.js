@@ -3,6 +3,12 @@ let vectorLayer;
 let vectorSource;
 let clickCoordinates = [];
 let levelSelector;
+let caminhosSource, caminhosLayer;
+let map;
+let mapClickListener = null;
+let draw;
+let coordinate;
+
 function loadScripts() {
     var olStylesheet = document.createElement('link');
     olStylesheet.rel = 'stylesheet';
@@ -97,12 +103,49 @@ function initMap() {
                 });
             }
 
-            // Salas
             if (feature.get('indoor') === 'room') {
-                return new ol.style.Style({
-                    stroke: new ol.style.Stroke({ color: '#a49f9f', width: 1 }),
-                    fill: new ol.style.Fill({ color: '#ffffa1' })
-                });
+                // Estilo da sala (borda e preenchimento)
+                let styles = [
+                    new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: '#a49f9f',  // Cor da borda
+                            width: 1
+                        }),
+                        fill: new ol.style.Fill({
+                            color: '#ffffa1'  // Cor de preenchimento
+                        })
+                    })
+                ];
+
+                // Adicionando o estilo de texto (nome da sala)
+                const name = feature.get('name');
+                if (typeof name === 'string' && name.trim() !== '') {
+                    const geometry = feature.getGeometry();
+                    let labelCoord;
+
+                    // Para polígonos (salas), pegamos o ponto central
+                    if (geometry.getType() === 'Polygon' || geometry.getType() === 'MultiPolygon') {
+                        labelCoord = geometry.getInteriorPoint().getCoordinates();
+                    } else {
+                        labelCoord = geometry.getCoordinates(); // Para outros tipos de geometria
+                    }
+
+                    // Adicionando o rótulo (nome da sala) ao estilo
+                    styles.push(new ol.style.Style({
+                        geometry: new ol.geom.Point(labelCoord),
+                        text: new ol.style.Text({
+                            text: name,
+                            font: 'bold 13px sans-serif',  // Fonte do nome
+                            fill: new ol.style.Fill({ color: '#000000' }),  // Cor do texto
+                            stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 }),  // Contorno do texto
+                         
+                        }),
+                        zIndex: 1000  // Garantir que o nome fique por cima dos outros elementos
+                    }));
+                }
+
+                // Retorna o array com os dois estilos aplicados (geometria e texto)
+                return styles;
             }
 
             // Corredores
@@ -125,7 +168,9 @@ function initMap() {
                 });
             }
 
+
             if (feature.get('highway') === 'elevator') {
+             
                 var geometry = feature.getGeometry();
                 var center = geometry.getInteriorPoint().getCoordinates();
 
@@ -157,13 +202,15 @@ function initMap() {
                 return [polygonStyle, iconStyle];
             }
 
+            
+
             // Padrão
             return estiloPadrao;
         }
     });
 
     // Inicialização do mapa
-    const map = new ol.Map({
+    map = new ol.Map({
         target: 'map',
         layers: [
             new ol.layer.Tile({
@@ -180,15 +227,20 @@ function initMap() {
         })
     });
 
-    // Zoom automático ao carregar dados
-    vectorSource.on('change', function () {
-        if (vectorSource.getState() === 'ready') {
+
+    const onChangeOnce = () => {
+        if (vectorSource.getState() === 'ready' && !vectorSource.isEmpty()) {
             map.getView().fit(vectorSource.getExtent(), {
                 padding: [50, 50, 50, 50],
-                maxZoom: 21
+                maxZoom: 21,
+                duration: 500
             });
+
+            vectorSource.un('change', onChangeOnce); // Desativa o listener
         }
-    });
+    };
+
+    vectorSource.on('change', onChangeOnce);
 
     // Listener para o seletor de andar
     levelSelector = document.getElementById('level');
@@ -201,103 +253,63 @@ function initMap() {
         });
     }
 
-    // Se houver outro seletor (ex: <select id="nivelSelector">)
-    const select = document.getElementById('nivelSelector');
-    if (select) {
-        select.addEventListener('change', function () {
-            nivelSelecionado = this.value;
-            vectorLayer.changed();
-        });
-    }
+    caminhosSource = new ol.source.Vector();
+    caminhosLayer = new ol.layer.Vector({
+        source: caminhosSource,
+        style: function (feature) {
+            const level = feature.get('level');
+            const levelList = level ? level.split(';') : [];
+            if (!levelList.includes(nivelSelecionado)) return null;
 
-    map.on('click', function (event) {
-        const coord = event.coordinate;
+            return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'blue',
+                        width: 3
+                    })
+                })
+    }});
 
-        const style = new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 6,
-                fill: new ol.style.Fill({ color: 'red' }),
-                stroke: new ol.style.Stroke({ color: 'white', width: 2 })
-            })
-        });
+    map.addLayer(caminhosLayer);
 
-        const feature = new ol.Feature({
-            geometry: new ol.geom.Point(coord),
-            level: levelSelector.value
-        });
+    enableClick();
 
-        feature.set("originalStyle", style); // Guardamos o estilo original
-        feature.setStyle(style);
-        vectorSource.addFeature(feature);
-
-        updateFeatureVisibility(); // Garante que só os do nível atual ficam visíveis
+    map.on('movestart', () => {
+        hideContextMenu();
     });
 
 
     console.log('Mapa inicializado com sucesso!');
 }
 
-function addBeacon(longitude, latitude) {
-    // Cria o ícone do beacon
-    const beaconIcon = new ol.style.Icon({
-        src: 'https://openlayers.org/en/v6.9.0/examples/data/icon.png',
-        scale: 0.1
-    });
+function enableClick() {
+    if (!mapClickListener) {
+        mapClickListener = function (event) {
+            clickCoordinate = event.coordinate;
+            coordinate = ol.proj.toLonLat(clickCoordinate);
 
-    const beaconLocation = ol.proj.fromLonLat([longitude, latitude]);
-    const beaconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(beaconLocation)
-    });
+            const pixel = map.getEventPixel(event.originalEvent);
+            const mapElement = document.getElementById('map');
+            const menu = document.getElementById('context-menu');
 
-    beaconFeature.setStyle(new ol.style.Style({
-        image: beaconIcon
-    }));
+            // Calcula posição dentro do mapa
+            const rect = mapElement.getBoundingClientRect();
+            const x = pixel[0];
+            const y = pixel[1];
 
-    const vectorSource = new ol.source.Vector({
-        features: [beaconFeature]
-    });
-
-    if (vectorLayer) {
-        map.removeLayer(vectorLayer);
+            // Mostra o menu
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+            menu.style.display = 'block';
+        };
+        map.on('click', mapClickListener);
     }
-
-    vectorLayer = new ol.layer.Vector({
-        source: vectorSource
-    });
-
-    map.addLayer(vectorLayer);
 }
 
-function addPath(longitude, latitude) {
-    // Adiciona um ponto ao caminho
-    const coordinate = ol.proj.fromLonLat([longitude, latitude]);
-    clickCoordinates.push(coordinate);
-
-    const lineGeometry = new ol.geom.LineString(clickCoordinates);
-    const lineFeature = new ol.Feature({
-        geometry: lineGeometry
-    });
-
-    lineFeature.setStyle(new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: 'blue',
-            width: 4
-        })
-    }));
-
-    const vectorSource = new ol.source.Vector({
-        features: [lineFeature]
-    });
-
-    if (vectorLayer) {
-        map.removeLayer(vectorLayer);
+function disableClick() {
+    if (mapClickListener) {
+        map.un('click', mapClickListener);
+        mapClickListener = null;
     }
-
-    vectorLayer = new ol.layer.Vector({
-        source: vectorSource
-    });
-
-    map.addLayer(vectorLayer);
 }
 
 function updateFeatureVisibility() {
@@ -306,7 +318,91 @@ function updateFeatureVisibility() {
         const visible = (level === levelSelector.value);
         feature.setStyle(visible ? feature.get("originalStyle") : null);
     });
+
+    caminhosSource.getFeatures().forEach(feature => {
+        const level = feature.get('level');
+        const visible = (level === levelSelector.value);
+
+        // Exibe ou oculta o segmento com base no nível
+        feature.setStyle(visible ? new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'blue',
+                width: 3
+            })
+        }) : null);
+    });
 }
 
-    
+function hideContextMenu() {
+    const menu = document.getElementById('context-menu');
+    menu.style.display = 'none';
+}
+
+
+window.createPath = () => {
+    const nome = prompt("Nome do caminho:");
+    if (!nome) return;
+
+    const draw = new ol.interaction.Draw({
+        source: caminhosSource,
+        type: 'LineString'
+    });
+
+    map.addInteraction(draw);
+    hideContextMenu();
+    disableClick();
+
+    draw.on('drawend', function (e) {
+        const feature = e.feature;
+        feature.set('name', nome);
+        feature.set('level', levelSelector.value); // Associa o caminho ao nível selecionado no dropdown
+        map.removeInteraction(draw);
+        enableClick();
+
+        // Exibe uma mensagem confirmando o caminho desenhado
+        alert(`Caminho para o nível ${levelSelector.value} desenhado com sucesso!`);
+        updateFeatureVisibility();
+    });
+};
+
+function mapCoordinates() {
+    return coordinate;
+}
+
+function addBeacon(longitude, latitude, level, name = "") {
+    if (longitude == null || latitude == null) return;
+
+    const beaconLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+    // Estilo com ícone e texto acima
+    const iconWithLabelStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+            src: 'https://openlayers.org/en/v6.9.0/examples/data/icon.png',
+            scale: 1,
+            anchor: [0.5, 1]
+        }),
+        text: new ol.style.Text({
+            text: name,
+            offsetY: -25,
+            scale: 1.2,
+            fill: new ol.style.Fill({ color: '#000' }),
+            stroke: new ol.style.Stroke({ color: '#fff', width: 2 }),
+            textAlign: 'center'
+        })
+    });
+
+    const beaconFeature = new ol.Feature({
+        geometry: new ol.geom.Point(beaconLocation),
+        level: levelSelector.value,
+        name: name
+    });
+
+    beaconFeature.set("originalStyle", iconWithLabelStyle);
+    beaconFeature.setStyle(iconWithLabelStyle);
+
+    vectorSource.addFeature(beaconFeature);
+
+    updateFeatureVisibility();
+    hideContextMenu();
+}
 

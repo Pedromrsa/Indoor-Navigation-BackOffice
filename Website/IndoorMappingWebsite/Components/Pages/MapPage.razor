@@ -1,53 +1,56 @@
 ﻿
 @page "/map"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
 @inject IJSRuntime JSRuntime
 @inject IJSRuntime JS
+@inject IBeaconService BeaconService
 
 <style>
     body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
     }
 
     /* Navbar Styles */
     .navbarList {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: darkred;
-        padding: 0 20px;
-        list-style: none;
-        margin: 0;
-        height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: darkred;
+    padding: 0 20px;
+    list-style: none;
+    margin: 0;
+    height: 60px;
     }
 
     .logo a {
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
     }
 
     .navbarItem {
-        margin-left: 15px;
+    margin-left: 15px;
     }
 
-        .navbarItem a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
+    .navbarItem a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    }
 
-            .navbarItem a:hover:not(.active) {
-                background-color: #540000;
-            }
+    .navbarItem a:hover:not(.active) {
+    background-color: #540000;
+    }
 
-            .navbarItem a.active {
-                background-color: gray;
-            }
+    .navbarItem a.active {
+    background-color: gray;
+    }
 
 </style>
 
@@ -56,12 +59,12 @@
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
-    <li class="navbarItem"><a class="active" href="map">Map</a></li>
-    <li class="navbarItem"><a href="usertable">Users</a></li>
-    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
-    <li class="navbarItem"><a href="pathstable">Paths</a></li>
-    <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+        <li class="navbarItem"><a class="active" href="map">Map</a></li>
+        <li class="navbarItem"><a href="usertable">Users</a></li>
+        <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+        <li class="navbarItem"><a href="pathstable">Paths</a></li>
+        <li class="navbarItem"><a href="logstable">Logs</a></li>
+        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
     </div>
 </ul>
 
@@ -74,42 +77,61 @@
 
 <div id="map" style="width: 100%; height: calc(100vh - 60px); border: 1px solid #ccc;"></div>
 
+<div id="context-menu" style="display:none; position:absolute; background:#fff; border:1px solid #ccc; z-index:1000; padding:8px; border-radius:6px;">
+    <button @onclick="() => ShowEditModal()">Put Beacon</button><br />
+    <button onclick="createPath()">Start Path</button>
+</div>
+
+<div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Beacon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="beaconToEdit" OnValidSubmit="HandleEditSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Name</label>
+                        <InputText id="nome" class="form-control" @bind-Value="beaconToEdit.nome" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="localizacao" class="form-label">Location</label>
+                        <InputText id="localizacao" class="form-control" @bind-Value="beaconToEdit.localizacao" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
-    /*
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    private List<Beacon> beacons = new List<Beacon>();
+
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("initMap");
-        }
-    }*/
+        beacons = await BeaconService.GetBeaconsAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            // Inicializa o mapa quando o componente for renderizado pela primeira vez
             await InitializeMap();
-        }
-        /*
-          
-         
-        if (firstRender)
+           
+        } 
+        foreach (Beacon beacon in beacons)
         {
-            if (firstRender)
-            {
-                // Carregar o arquivo JavaScript dinamicamente
-                await JSRuntime.InvokeVoidAsync("eval", @"
-                var script = document.createElement('script');
-                script.src = 'js/openlayers-init.js';
-                script.onload = function() {
-                    // Chama a função initMap após o script ser carregado
-                    loadScripts();
-                };
-                document.head.appendChild(script);
-            ");
-            }
-        }*/
+           await AddBeacon(beacon.longitude, beacon.latitude, 1, beacon.nome);
+        }
+
     }
     private async Task InitializeMap()
     {
@@ -117,15 +139,45 @@
         await JSRuntime.InvokeVoidAsync("initMap");
     }
 
-    private async Task AddBeacon(double longitude, double latitude)
+    private async Task AddBeacon(double longitude, double latitude, int level, string nome)
     {
         // Chama o JavaScript para adicionar um beacon (ponto) no mapa
-        await JSRuntime.InvokeVoidAsync("addBeacon", longitude, latitude);
+        await JSRuntime.InvokeVoidAsync("addBeacon", longitude, latitude, level, nome);
     }
 
     private async Task AddPath(double longitude, double latitude)
     {
         // Chama o JavaScript para adicionar um caminho no mapa
         await JSRuntime.InvokeVoidAsync("addPath", longitude, latitude);
+    }
+
+
+    private bool showModal = false;  
+
+    private Beacon beaconToEdit = new Beacon();
+    private double[] coordinates;
+
+    private async void ShowEditModal()
+    {
+        coordinates = await JSRuntime.InvokeAsync<double[]>("mapCoordinates");
+        beaconToEdit.longitude = coordinates[0];
+        beaconToEdit.latitude = coordinates[1];
+        showModal = true;
+
+    }
+
+    private void CloseModal()
+    {
+        showModal = false; 
+    }
+
+    private async Task HandleEditSubmit()
+    {
+        var sucesso = await BeaconService.CreateBeaconAsync(beaconToEdit);
+        if (sucesso)
+        {
+            await AddBeacon(beaconToEdit.longitude, beaconToEdit.latitude, 1, beaconToEdit.nome);
+        }
+        CloseModal();
     }
 }
