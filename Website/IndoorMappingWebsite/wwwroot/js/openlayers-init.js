@@ -1,5 +1,8 @@
 ﻿// Função para carregar os scripts
 let vectorLayer;
+let vectorSource;
+let clickCoordinates = [];
+let levelSelector;
 function loadScripts() {
     var olStylesheet = document.createElement('link');
     olStylesheet.rel = 'stylesheet';
@@ -44,13 +47,13 @@ function initMap() {
     });
 
     // Fonte de dados GeoJSON
-    const vectorSource = new ol.source.Vector({
+    vectorSource = new ol.source.Vector({
         url: '/data/indoor_map.geojson',
         format: new ol.format.GeoJSON()
     });
 
     // Camada vetorial com estilo dinâmico por tipo e nível
-    const vectorLayer = new ol.layer.Vector({
+    vectorLayer = new ol.layer.Vector({
         source: vectorSource,
         style: function (feature) {
             const level = feature.get('level');
@@ -188,12 +191,13 @@ function initMap() {
     });
 
     // Listener para o seletor de andar
-    const levelSelector = document.getElementById('level');
+    levelSelector = document.getElementById('level');
     if (levelSelector) {
         levelSelector.value = '1';
         levelSelector.addEventListener('change', function (e) {
             nivelSelecionado = e.target.value;
             vectorLayer.changed(); // força redesenho
+            updateFeatureVisibility();
         });
     }
 
@@ -206,7 +210,102 @@ function initMap() {
         });
     }
 
+    map.on('click', function (event) {
+        const coord = event.coordinate;
+
+        const style = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 6,
+                fill: new ol.style.Fill({ color: 'red' }),
+                stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+            })
+        });
+
+        const feature = new ol.Feature({
+            geometry: new ol.geom.Point(coord),
+            level: levelSelector.value
+        });
+
+        feature.set("originalStyle", style); // Guardamos o estilo original
+        feature.setStyle(style);
+        vectorSource.addFeature(feature);
+
+        updateFeatureVisibility(); // Garante que só os do nível atual ficam visíveis
+    });
+
+
     console.log('Mapa inicializado com sucesso!');
+}
+
+function addBeacon(longitude, latitude) {
+    // Cria o ícone do beacon
+    const beaconIcon = new ol.style.Icon({
+        src: 'https://openlayers.org/en/v6.9.0/examples/data/icon.png',
+        scale: 0.1
+    });
+
+    const beaconLocation = ol.proj.fromLonLat([longitude, latitude]);
+    const beaconFeature = new ol.Feature({
+        geometry: new ol.geom.Point(beaconLocation)
+    });
+
+    beaconFeature.setStyle(new ol.style.Style({
+        image: beaconIcon
+    }));
+
+    const vectorSource = new ol.source.Vector({
+        features: [beaconFeature]
+    });
+
+    if (vectorLayer) {
+        map.removeLayer(vectorLayer);
+    }
+
+    vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+
+    map.addLayer(vectorLayer);
+}
+
+function addPath(longitude, latitude) {
+    // Adiciona um ponto ao caminho
+    const coordinate = ol.proj.fromLonLat([longitude, latitude]);
+    clickCoordinates.push(coordinate);
+
+    const lineGeometry = new ol.geom.LineString(clickCoordinates);
+    const lineFeature = new ol.Feature({
+        geometry: lineGeometry
+    });
+
+    lineFeature.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'blue',
+            width: 4
+        })
+    }));
+
+    const vectorSource = new ol.source.Vector({
+        features: [lineFeature]
+    });
+
+    if (vectorLayer) {
+        map.removeLayer(vectorLayer);
+    }
+
+    vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+
+    map.addLayer(vectorLayer);
+}
+
+function updateFeatureVisibility() {
+    vectorSource.getFeatures().forEach(feature => {
+        const level = feature.get("level");
+        const visible = (level === levelSelector.value);
+        feature.setStyle(visible ? feature.get("originalStyle") : null);
+    });
 }
 
     
