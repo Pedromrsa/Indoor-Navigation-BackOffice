@@ -108,17 +108,17 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-M0G1sNT4P06FiN8cHJFdNURpicjvn4RDB2\u002Bwxzlwos0="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"5923"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022M0G1sNT4P06FiN8cHJFdNURpicjvn4RDB2\u002Bwxzlwos0=\u0022"},{"Name":"Last-Modified","Value":"Thu, 03 Apr 2025 20:45:12 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IndoorMappingWebsite/js/openlayers-init.1ofom77x81.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"1ofom77x81"},{"Name":"integrity","Value":"sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="},{"Name":"label","Value":"_content/IndoorMappingWebsite/js/openlayers-init.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"10222"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\u0022"},{"Name":"Last-Modified","Value":"Sat, 03 May 2025 03:51:23 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IndoorMappingWebsite/js/openlayers-init.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4\u002B4CsUApmLvbR8="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7523"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4\u002B4CsUApmLvbR8=\u0022"},{"Name":"Last-Modified","Value":"Sat, 03 May 2025 00:20:55 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/IndoorMappingWebsite/js/openlayers-init.zwvvft96dd.js">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"zwvvft96dd"},{"Name":"integrity","Value":"sha256-U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4\u002B4CsUApmLvbR8="},{"Name":"label","Value":"_content/IndoorMappingWebsite/js/openlayers-init.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7523"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4\u002B4CsUApmLvbR8=\u0022"},{"Name":"Last-Modified","Value":"Sat, 03 May 2025 00:20:55 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"10222"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\u0022"},{"Name":"Last-Modified","Value":"Sat, 03 May 2025 03:51:23 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
   </ItemGroup>
 </Project>

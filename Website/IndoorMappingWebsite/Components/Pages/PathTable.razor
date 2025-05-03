@@ -2,6 +2,8 @@
 @using IndoorMappingWebsite.Models
 @using IndoorMappingWebsite.Services
 @inject IPathService PathService
+@inject IAccessibilityService AccessibilityService
+@inject IInfraestruturaService InfraestruturaService
 @attribute [StreamRendering]
 
 <PageTitle>pathstable</PageTitle>
@@ -197,18 +199,62 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@person.origemId</td>
-                        <td>@person.destinoId</td>
+                        <td>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                if(local.id == person.origemId)
+                                {
+                                    @($"{local.descricao} (Piso {local.piso})")
+
+                                }
+                            }
+                        </td>
+                        <td>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                if (local.id == person.destinoId)
+                                {
+                                    @($"{local.descricao} (Piso {local.piso})")
+                                }
+                            }
+                        </td>
                         <td>@(person.distancia)m</td>
-                        <td>@person.acessivel</td>
+                        @if(person.acessivel)
+                        {
+                            <td>
+                                Available
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Unavailable
+                            </td>
+                        }
                         <td>@person.tipoAcessibilidade</td>
                         <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(person)">Edit</button></td>
                         <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.id)">Delete</button></td>
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><InputNumber class="form-control" placeholder="Insert Origin..." @bind-Value="newPath.origemId" /></td>
-                    <td><InputNumber class="form-control" placeholder="Insert Destiny..." @bind-Value="newPath.destinoId" /></td>
+                    <td>
+                        <InputSelect @bind-Value=newPath.origemId class="form-select">
+                            <option disabled selected value="-1">Select Origin</option>
+                            @foreach(var local in Infraestruturas)
+                            {
+                                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                            }
+                        </InputSelect>
+                    </td>
+                    <td>
+                        <InputSelect @bind-Value=newPath.destinoId class="form-select">
+                            <option disabled selected value="-1">Select Destiny</option>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                            }
+                        </InputSelect>
+                    </td>
                     <td><InputNumber class="form-control" placeholder="Insert Distance..." @bind-Value="newPath.distancia" /></td>
                     <td>
                         <InputSelect @bind-Value=newPath.acessivel class="form-select">
@@ -237,12 +283,24 @@
 
                         <div class="mb-3">
                             <label for="origemId" class="form-label">Origin</label>
-                            <InputNumber id="origemId" class="form-control" @bind-Value="pathToEdit.origemId" />
+                            <InputSelect @bind-Value=pathToEdit.origemId class="form-select">
+                                <option disabled selected value="-1">Select Origin</option>
+                                @foreach (var local in Infraestruturas)
+                                {
+                                    <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                                }
+                            </InputSelect>
                         </div>
 
                         <div class="mb-3">
                             <label for="destinoId" class="form-label">Destiny</label>
-                            <InputNumber id="destinoId" class="form-control" @bind-Value="pathToEdit.destinoId" />
+                            <InputSelect @bind-Value=pathToEdit.destinoId class="form-select">
+                                <option disabled selected value="-1">Select Origin</option>
+                                @foreach (var local in Infraestruturas)
+                                {
+                                    <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                                }
+                            </InputSelect>
                         </div>
 
                         <div class="mb-3">
@@ -272,8 +330,12 @@
 
 @code {
     private List<Caminho> Caminhos = new List<Caminho>();
+    private List<Accessibility> Acessibilities = new List<Accessibility>();
+    private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();
     protected override async Task OnInitializedAsync()
     {
+        Infraestruturas = await InfraestruturaService.GetInfraestruturasAsync();
+        Acessibilities = await AccessibilityService.GetAccessibilityAsync();
         Caminhos = await PathService.GetPathsAsync();
     }
     private string messageColor = "green";
@@ -287,11 +349,12 @@
 
     // Get the filtered people based on the search query
     private IEnumerable<Caminho> FilteredPeople =>
-        Caminhos.Where(p => p.origemId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.destinoId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.distancia.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.acessivel.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.tipoAcessibilidade.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    Caminhos.Where(p =>
+        GetInfraDescricao(p.origemId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        GetInfraDescricao(p.destinoId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        p.distancia.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        p.acessivel.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        p.tipoAcessibilidade.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
     private CaminhoPost newPath = new();
     private string message;
     private CancellationTokenSource? cts;
@@ -317,16 +380,23 @@
     }
     public async Task HandleValidSubmit()
     {
-        var success = await PathService.CreatePathAsync(newPath);
-        if (success)
+        if(newPath.origemId!=-1 && newPath.destinoId!=-1)
         {
-            startTimer("Caminho criado com sucesso!", "green");
-            newPath = new(); // limpa o form
-            Caminhos = await PathService.GetPathsAsync();
+            var success = await PathService.CreatePathAsync(newPath);
+            if (success)
+            {
+                startTimer("Caminho criado com sucesso!", "green");
+                newPath = new(); // limpa o form
+                Caminhos = await PathService.GetPathsAsync();
+            }
+            else
+            {
+                startTimer("Erro ao criar caminho.", "red");
+            }
         }
         else
         {
-            startTimer("Erro ao criar caminho.", "red");
+            startTimer("Selecione origem e destino validos.", "red");
         }
     }
     public async Task HandleDeleteSubmit(int id)
@@ -402,4 +472,10 @@
             startTimer("Erro ao editar caminho.", "red");
         }
     }
+    private string GetInfraDescricao(int id)
+    {
+        var infra = Infraestruturas.FirstOrDefault(i => i.id == id);
+        return infra != null ? $"{infra.descricao} (Piso {infra.piso})" : "";
+    }
+
 }
