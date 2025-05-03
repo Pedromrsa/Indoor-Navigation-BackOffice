@@ -369,6 +369,10 @@ function mapCoordinates() {
     return coordinate;
 }
 
+function getCurrentLevel() {
+    return parseInt(levelSelector.value);
+}
+
 function addBeacon(longitude, latitude, level, name = "") {
     if (longitude == null || latitude == null) return;
 
@@ -393,7 +397,7 @@ function addBeacon(longitude, latitude, level, name = "") {
 
     const beaconFeature = new ol.Feature({
         geometry: new ol.geom.Point(beaconLocation),
-        level: levelSelector.value,
+        level: level.toString(),
         name: name
     });
 

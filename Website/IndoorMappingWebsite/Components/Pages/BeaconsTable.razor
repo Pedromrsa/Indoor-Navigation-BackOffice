@@ -187,6 +187,7 @@
                     <th>Longitude</th>
                     <th>Latitude</th>
                     <th>Localization</th>
+                    <th>Floor</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -199,6 +200,7 @@
                         <td>@(beacon.longitude)º</td>
                         <td>@(beacon.latitude)º</td>
                         <td>@beacon.localizacao</td>
+                        <td>@beacon.piso</td>
                         <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(beacon)">Edit</button></td>
                         <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(beacon.id)">Delete</button></td>
                     </tr>
@@ -208,6 +210,7 @@
                     <td><InputNumber class="form-control" placeholder="Insira a longitude..." @bind-Value="newBeacon.longitude" /></td>
                     <td><InputNumber class="form-control" placeholder="Insira a latitude..." @bind-Value="newBeacon.latitude" /></td>
                     <td><InputText class="form-control" placeholder="Insira a localização..." @bind-Value="newBeacon.localizacao" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insira o piso..." @bind-Value="newBeacon.piso" /></td>
                     <td></td>
                     <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
@@ -247,6 +250,11 @@
                             <InputText id="localizacao" class="form-control" @bind-Value="beaconToEdit.localizacao" />
                         </div>
 
+                        <div class="mb-3">
+                            <label for="piso" class="form-label">Floor</label>
+                            <InputNumber id="piso" class="form-control" @bind-Value="beaconToEdit.piso" />
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </EditForm>
                 </div>
@@ -280,7 +288,8 @@
         beacons.Where(p => p.nome.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                           p.longitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                           p.latitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.localizacao.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+                          p.localizacao.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.piso.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 
 
     private Beacon newBeacon = new();
@@ -330,7 +339,8 @@
                 nome = beacon.nome,
                 longitude = beacon.longitude,
                 latitude = beacon.latitude,
-                localizacao = beacon.localizacao
+                localizacao = beacon.localizacao,
+                piso = beacon.piso
             };
         showModal = true; // Exibe o modal
     }

@@ -86,7 +86,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Beacon</h5>
+                <h5 class="modal-title">Create Beacon</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
             </div>
             <div class="modal-body">
@@ -125,11 +125,11 @@
         if (firstRender)
         {
             await InitializeMap();
-           
+
         } 
         foreach (Beacon beacon in beacons)
         {
-           await AddBeacon(beacon.longitude, beacon.latitude, 1, beacon.nome);
+            await AddBeacon(beacon.longitude, beacon.latitude, beacon.piso, beacon.nome);
         }
 
     }
@@ -162,6 +162,7 @@
         coordinates = await JSRuntime.InvokeAsync<double[]>("mapCoordinates");
         beaconToEdit.longitude = coordinates[0];
         beaconToEdit.latitude = coordinates[1];
+        beaconToEdit.piso = await JSRuntime.InvokeAsync<int>("getCurrentLevel");
         showModal = true;
 
     }
@@ -176,7 +177,7 @@
         var sucesso = await BeaconService.CreateBeaconAsync(beaconToEdit);
         if (sucesso)
         {
-            await AddBeacon(beaconToEdit.longitude, beaconToEdit.latitude, 1, beaconToEdit.nome);
+            await AddBeacon(beaconToEdit.longitude, beaconToEdit.latitude, beaconToEdit.piso, beaconToEdit.nome);
         }
         CloseModal();
     }
