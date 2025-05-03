@@ -1,5 +1,8 @@
 ﻿@page "/beaconstable"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
 @attribute [StreamRendering]
+@inject IBeaconService BeaconService
 
 <PageTitle>beaconstable</PageTitle>
 
@@ -169,45 +172,84 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var person in FilteredPeople)
+                @foreach (var beacon in FilteredBeacons)
                 {
                     <tr>
-                        <td>@person.Name</td>
-                        <td>@(person.Longitude)º</td>
-                        <td>@(person.Latitude)º</td>
-                        <td>@person.Localization</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td>@beacon.nome</td>
+                        <td>@(beacon.longitude)º</td>
+                        <td>@(beacon.latitude)º</td>
+                        <td>@beacon.localizacao</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(beacon)">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(beacon.id)">Delete</button></td>
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><input class="form-control" placeholder="Insira o nome..." /></td>
-                    <td><input class="form-control" placeholder="Insira a longitude..." /></td>
-                    <td><input class="form-control" placeholder="Insira a latitude..." /></td>
-                    <td><input class="form-control" placeholder="Insira a localização..." /></td>
-                    <td></td>
-                    <td><button type="button" class="btn btn-success">Add</button></td>
+                    <td><InputText class="form-control" placeholder="Insira o nome..." @bind-Value="newBeacon.nome" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insira a longitude..." @bind-Value="newBeacon.longitude" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insira a latitude..." @bind-Value="newBeacon.latitude" /></td>
+                    <td><InputText class="form-control" placeholder="Insira a localização..." @bind-Value="newBeacon.localizacao" /></td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(message))
+                        {
+                            <p class="mt-3">@message</p>
+                        }
+                    </td>
+                    <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Beacon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="beaconToEdit" OnValidSubmit="HandleEditSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Name</label>
+                            <InputText id="nome" class="form-control" @bind-Value="beaconToEdit.nome" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <InputNumber id="longitude" class="form-control" @bind-Value="beaconToEdit.longitude" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <InputNumber id="latitude" class="form-control" @bind-Value="beaconToEdit.latitude" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="localizacao" class="form-label">Location</label>
+                            <InputText id="localizacao" class="form-control" @bind-Value="beaconToEdit.localizacao" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+
+
 @code {
-    // Sample data for the table
-    private List<Person> people = new List<Person>
+    private List<Beacon> beacons = new List<Beacon>();
+
+    protected override async Task OnInitializedAsync()
     {
-        new Person { Name = "YellowBeacon", Longitude = 3048.7, Latitude = 2000, Localization = "Entrada ISEP 1" },
-        new Person { Name = "BlueBeacon", Longitude = 3058.1, Latitude = 2100.9, Localization = "Entrada B" },
-        new Person { Name = "PurpleBeacon", Longitude = 3028, Latitude = 2200.7, Localization = "1ºPiso B Oeste" },
-        new Person { Name = "BlackBeacon", Longitude = 3095.7, Latitude = 2200.7, Localization = "1ºPiso B Este" },
-        new Person { Name = "WhiteBeacon", Longitude = 3038.7, Latitude = 2400.3, Localization = "2ºPiso B Este" },
-        new Person { Name = "GreenBeacon", Longitude = 3100.2, Latitude = 2450.1, Localization = "Laboratório A" },
-        new Person { Name = "OrangeBeacon", Longitude = 3070.4, Latitude = 2300.6, Localization = "Sala de Reuniões" },
-        new Person { Name = "PinkBeacon", Longitude = 3065.9, Latitude = 2150.3, Localization = "Corredor Principal" },
-        new Person { Name = "GrayBeacon", Longitude = 3010.8, Latitude = 1985.5, Localization = "Cafetaria" },
-        new Person { Name = "RedBeacon", Longitude = 3085.3, Latitude = 2500.8, Localization = "Biblioteca" }
-    };
+        beacons = await BeaconService.GetBeaconsAsync();
+    }
+
 
 
     // The search query from the input
@@ -219,17 +261,90 @@
     }
 
     // Get the filtered people based on the search query
-    private IEnumerable<Person> FilteredPeople =>
-        people.Where(p => p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Longitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Latitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Localization.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-    // Person model for the table data
-    public class Person
+    private IEnumerable<Beacon> FilteredBeacons =>
+        beacons.Where(p => p.nome.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.longitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.latitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.localizacao.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+
+    private Beacon newBeacon = new();
+    private string message;
+
+    public async Task HandleValidSubmit()
     {
-        public string Name { get; set; }
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
-        public string Localization { get; set; }
+        var success = await BeaconService.CreateBeaconAsync(newBeacon);
+        message = success ? "Beacon criado com sucesso!" : "Erro ao criar beacon.";
+
+        if (success)
+        {
+            beacons = await BeaconService.GetBeaconsAsync();
+            newBeacon = new(); // limpa o form
+        }
+
+    }
+
+    public async Task HandleDeleteSubmit(int id)
+    {
+        var success = await BeaconService.DeleteBeaconAsync(id);
+        message = success ? "Beacon eliminado com sucesso!" : "Erro ao eliminar beacon.";
+
+        if (success)
+        {
+            beacons = await BeaconService.GetBeaconsAsync();
+        }
+
+    }
+
+
+    /// EDIÇÂO
+    private bool showModal = false;  // Controla a visibilidade do modal
+    private Beacon beaconToEdit = new Beacon(); // Instância do beacon a ser editado
+
+    private void ShowEditModal(Beacon beacon)
+    {
+        // Preenche os campos do modal com os dados do beacon selecionado
+        beaconToEdit = new Beacon
+            {
+                id = beacon.id,
+                nome = beacon.nome,
+                longitude = beacon.longitude,
+                latitude = beacon.latitude,
+                localizacao = beacon.localizacao
+            };
+        showModal = true; // Exibe o modal
+    }
+
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
+
+    private async Task HandleEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso = await BeaconService.UpdateBeaconAsync(beaconToEdit);
+
+        if (sucesso)
+        {
+            /*
+            // Atualizar a lista ou fazer outras ações após a edição
+            var beacon = FilteredBeacons.FirstOrDefault(b => b.id == beaconToEdit.id);
+            if (beacon != null)
+            {
+                beacon.nome = beaconToEdit.nome;
+                beacon.longitude = beaconToEdit.longitude;
+                beacon.latitude = beaconToEdit.latitude;
+                beacon.localizacao = beaconToEdit.localizacao;
+            }*/
+            beacons = await BeaconService.GetBeaconsAsync();
+
+            CloseModal(); // Fecha o modal após a edição
+            Console.WriteLine($"Beacon com ID {beaconToEdit.id} editado com sucesso.");
+        }
+        else
+        {
+            Console.WriteLine($"Erro ao editar beacon com ID {beaconToEdit.id}.");
+        }
     }
 }

@@ -8,12 +8,15 @@ namespace IndoorMappingWebsite.Services
         Task<List<Beacon>> GetBeaconsAsync();
         Task<bool> CreateBeaconAsync(Beacon beacon);
         Task<Beacon> GetBeaconByIdAsync(int id);
+        Task<bool> DeleteBeaconAsync(int id);
+
+        Task<bool> UpdateBeaconAsync(Beacon beacon);
     }
     public class BeaconService : IBeaconService
     {
 
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "/api/admin/Beacons";
+        private readonly string _baseUrl = "/api/Beacons";
 
         public BeaconService(HttpClient httpClient)
         {
@@ -51,7 +54,47 @@ namespace IndoorMappingWebsite.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Beacon>($"{_baseUrl}{id}");
+                return await _httpClient.GetFromJsonAsync<Beacon>($"{_baseUrl}/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"API call error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteBeaconAsync(int id)
+        {
+            try
+            { 
+                var response = await _httpClient.DeleteAsync($"{_baseUrl}/{id}");
+                // Verifica se a resposta da requisição foi bem-sucedida
+                if (response.IsSuccessStatusCode)
+                {
+                    return true; // Deletado com sucesso
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"API call error: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        public async Task<bool> UpdateBeaconAsync(Beacon beacon)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"{_baseUrl}/{beacon.id}", beacon);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true; 
+                }
+                else
+                    return false;
             }
             catch (Exception ex)
             {

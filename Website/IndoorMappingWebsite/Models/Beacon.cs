@@ -2,9 +2,10 @@
 {
     public class Beacon
     {
+        public int id { get; set; }
         public string nome { get; set; }
-        public double lng { get; set; }
-        public double lat { get; set; }
-        public string loc { get; set; }
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+        public string localizacao { get; set; }
     }
 }
