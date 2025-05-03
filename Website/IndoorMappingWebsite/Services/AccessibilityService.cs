@@ -12,7 +12,7 @@ namespace IndoorMappingWebsite.Services
     public class AccessibilityService : IAccessibilityService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "------";
+        private readonly string _baseUrl = "/api/Acessibilidade";
 
         public AccessibilityService(HttpClient httpClient)
         {

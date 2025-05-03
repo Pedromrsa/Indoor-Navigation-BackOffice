@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cDL9pDYh90Z6D/Y+0AWVVIaApoc32olUcPwMuLbTsN8=",
+  "Hash": "Z0maPqlUW291GK2UF8OR8qML67eTI8tABqRkG5FEthQ=",
   "Source": "IndoorMappingWebsite",
   "BasePath": "_content/IndoorMappingWebsite",
   "Mode": "Default",
@@ -241,8 +241,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "zwvvft96dd",
-      "Integrity": "U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4+4CsUApmLvbR8=",
+      "Fingerprint": "1ofom77x81",
+      "Integrity": "UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\openlayers-init.js"
@@ -1070,6 +1070,51 @@
       ]
     },
     {
+      "Route": "js/openlayers-init.1ofom77x81.js",
+      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10222"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 03 May 2025 03:51:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1ofom77x81"
+        },
+        {
+          "Name": "label",
+          "Value": "js/openlayers-init.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="
+        }
+      ]
+    },
+    {
       "Route": "js/openlayers-init.js",
       "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
       "Selectors": [],
@@ -1080,7 +1125,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "7523"
+          "Value": "10222"
         },
         {
           "Name": "Content-Type",
@@ -1088,11 +1133,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4+4CsUApmLvbR8=\""
+          "Value": "\"UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 00:20:55 GMT"
+          "Value": "Sat, 03 May 2025 03:51:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1102,52 +1147,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4+4CsUApmLvbR8="
-        }
-      ]
-    },
-    {
-      "Route": "js/openlayers-init.zwvvft96dd.js",
-      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "7523"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4+4CsUApmLvbR8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 00:20:55 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "zwvvft96dd"
-        },
-        {
-          "Name": "label",
-          "Value": "js/openlayers-init.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-U8YZBVfvy5sPXJsGcU3PXCa0VAOCB4+4CsUApmLvbR8="
+          "Value": "sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="
         }
       ]
     }
