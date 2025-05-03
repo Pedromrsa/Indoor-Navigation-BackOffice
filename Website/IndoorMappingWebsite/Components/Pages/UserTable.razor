@@ -84,7 +84,7 @@
             border: 1px solid #ced4da;
             font-size: 1.1rem;
         }
-    
+
     /* Table Container */
     .table-container {
         width: 80%;
@@ -133,18 +133,38 @@
     input{
         text-align: center;
     }
-</style>
 
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+</style>
+@if(message!="" && message!=null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
 <!-- Navbar -->
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
-    <li class="navbarItem"><a href="home">Home</a></li>
-    <li class="navbarItem"><a class="active" href="usertable">Users</a></li>
-    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
-    <li class="navbarItem"><a href="pathstable">Paths</a></li>
-    <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+        <li class="navbarItem"><a href="home">Home</a></li>
+        <li class="navbarItem"><a class="active" href="usertable">Users</a></li>
+        <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+        <li class="navbarItem"><a href="pathstable">Paths</a></li>
+        <li class="navbarItem"><a href="logstable">Logs</a></li>
+        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
     </div>
 </ul>
 
@@ -163,7 +183,9 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Password</th>
                     <th>Type</th>
+                    <th>Mobility</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -172,55 +194,112 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@person.Name</td>
-                        <td>@person.Email</td>
-                        <td>@person.Type</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td>@person.nome</td>
+                        <td>@person.email</td>
+                        <td>Encrypted</td>
+                        <td>@person.tipoUsuario</td>
+                        <td>@person.mobilidadeTipo</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(person)">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.usuarioId)">Delete</button></td>
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><InputText class="form-control" placeholder="Insira o nome..." @bind-Value="newUser.nome" /></td>
-                    <td><InputText class="form-control" placeholder="Insira o email..." @bind-Value="newUser.email" /></td>
-                    <td><InputText class="form-control" placeholder="Insira a passe..." @bind-Value="newUser.password" /></td>
-                    <td><InputNumber class="form-control" placeholder="Insira o tipo..." @bind-Value="newUser.tipoId" /></td>
-                    <td></td>
-                    @if (!string.IsNullOrEmpty(message))
-                    {
-                        <p class="mt-3">@message</p>
-                    }
+                    <td><InputText class="form-control" placeholder="Insert Name..." @bind-Value="newUser.nome" /></td>
+                    <td><InputText class="form-control" placeholder="Insert Email..." @bind-Value="newUser.email" /></td>
+                    <td><InputText class="form-control" placeholder="Insert Password..." @bind-Value="newUser.password" /></td>
+                    <td>
+                        <select @bind=newUser.tipoId class="form-select">
+                            <option value="1">Admin</option>
+                            <option value="4">User</option>
+                            <option value="2">Editor</option>
+                            <option value="3">Reader</option>
+                        </select></td>
+                    <td>
+                        <select @bind=newUser.mobilidadeId class="form-select">
+                            <option value="1">Normal</option>
+                            <option value="2">Paraplegic</option>
+                            <option value="3">Tetraplegic</option>
+                        </select>
+                    </td>
                     <td></td>
                     <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
-					
                 </tr>
-				
+
             </tbody>
         </table>
+    </div>
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="userToEdit" OnValidSubmit="HandleEditSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Name</label>
+                            <InputText id="nome" class="form-control" @bind-Value="userToEdit.nome" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <InputText id="email" class="form-control" @bind-Value="userToEdit.email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipoUsuario" class="form-label">Type</label>
+                            <select @bind=userToEdit.tipoUsuarioId class="form-select">
+                                <option value="1">Admin</option>
+                                <option value="4">User</option>
+                                <option value="2">Editor</option>
+                                <option value="3">Reader</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobilidade" class="form-label">Mobility</label>
+                            <select @bind=userToEdit.mobilidadeId class="form-select">
+                                <option value="1">Normal</option>
+                                <option value="2">Paraplegic</option>
+                                <option value="3">Tetraplegic</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @code {
-    // Sample data for the table
-    private List<Person> people = new List<Person>
+    public class UserGet
     {
-        new Person { Name = "John", Email = "John@mail", Type = "Tetraplegic" },
-        new Person { Name = "Jane", Email = "Jane@mail", Type = "Admin" },
-        new Person { Name = "Michael", Email = "Michael@mail", Type = "Paraplegic" },
-        new Person { Name = "Sara", Email = "Sara@mail", Type = "User" },
-        new Person { Name = "Tom", Email = "Tom@mail", Type = "Paraplegic" },
-        new Person { Name = "Emily", Email = "Emily@mail", Type = "User" },
-        new Person { Name = "Robert", Email = "Robert@mail", Type = "Admin" },
-        new Person { Name = "Linda", Email = "Linda@mail", Type = "Tetraplegic" },
-        new Person { Name = "David", Email = "David@mail", Type = "Paraplegic" },
-        new Person { Name = "Sophia", Email = "Sophia@mail", Type = "User" },
-        new Person { Name = "Chris", Email = "Chris@mail", Type = "Tetraplegic" },
-        new Person { Name = "Karen", Email = "Karen@mail", Type = "Admin" },
-        new Person { Name = "Jason", Email = "Jason@mail", Type = "User" },
-        new Person { Name = "Angela", Email = "Angela@mail", Type = "Paraplegic" },
-        new Person { Name = "Steve", Email = "Steve@mail", Type = "Admin" }
-    };
-
-
+        public int usuarioId { get; set; }
+        public String nome { get; set; } = string.Empty;
+        public String email { get; set; } = string.Empty;
+        public String tipoUsuario { get; set; } = string.Empty;
+        public String mobilidadeTipo { get; set; } = string.Empty;
+    }
+    public class UserEdit
+    {
+        public int usuarioId { get; set; }
+        public String nome { get; set; } = string.Empty;
+        public String email { get; set; } = string.Empty;
+        public int tipoUsuarioId { get; set; }
+        public int mobilidadeId { get; set; }
+    }
+    private List<UserGet> Users = new List<UserGet>();
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await UserService.GetUsersAsync();
+    }
+    private string messageColor = "green";
     // The search query from the input
     private string searchQuery = string.Empty;
 
@@ -230,30 +309,138 @@
     }
 
     // Get the filtered people based on the search query
-    private IEnumerable<Person> FilteredPeople =>
-        people.Where(p => p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Type.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    private IEnumerable<UserGet> FilteredPeople =>
+        Users.Where(p => p.nome.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.tipoUsuario.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.mobilidadeTipo.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 
-    // Person model for the table data
-    public class Person
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Type { get; set; }
-    }
 
 
     private User newUser = new();
     private string message;
+    private CancellationTokenSource? cts;
+
+    private async Task startTimer(string msg, string Color)
+    {
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+    }
 
     public async Task HandleValidSubmit()
     {
         var success = await UserService.CreateUserAsync(newUser);
-        message = success ? "Utilizador criado com sucesso!" : "Erro ao criar utilizador.";
-
         if (success)
+        {
+            startTimer("Utilizador criado com sucesso!", "green");
             newUser = new(); // limpa o form
+            Users = await UserService.GetUsersAsync();
+        }
+        else
+        {
+            startTimer("Erro ao criar utilizador.", "red");
+        }
+    }
+    public async Task HandleDeleteSubmit(int id)
+    {
+        var success = await UserService.DeleteUserById(id);
+        if (success)
+        {
+            startTimer("Utilizador eliminado com sucesso!", "green");
+            Users = await UserService.GetUsersAsync();
+        }
+        else
+        {
+            startTimer("Erro ao eliminar Utilizador.", "red");
+        }
+    }
+    private bool showModal = false;
+    private UserEdit userToEdit = new UserEdit();
+    private void ShowEditModal(UserGet user)
+    {
+        int tipoId = 1;
+        int mobilidadeid = 1;
+        switch(user.tipoUsuario)
+        {
+            case "Admin":
+                tipoId = 1;
+                break;
+            case "User":
+                tipoId = 4;
+                break;
+            case "Editor":
+                tipoId = 2;
+                break;
+            case "Reader":
+                tipoId = 3;
+                break;
+        }
+        switch(user.mobilidadeTipo)
+        {
+            case "Normal":
+                mobilidadeid = 1;
+                break;
+            case "Tetraplégico":
+                mobilidadeid = 3;
+                break;
+            case "Paraplégico":
+                mobilidadeid = 2;
+                break;
+        }
+        userToEdit = new UserEdit
+            {
+                usuarioId = user.usuarioId,
+                nome = user.nome,
+                email = user.email,
+                tipoUsuarioId = tipoId,
+                mobilidadeId = mobilidadeid
+            };
+        showModal = true; // Exibe o modal
     }
 
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
+    private async Task HandleEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso = await UserService.UpdateUserById(userToEdit);
+
+        if (sucesso)
+        {
+            /*
+            // Atualizar a lista ou fazer outras ações após a edição
+            var beacon = FilteredBeacons.FirstOrDefault(b => b.id == beaconToEdit.id);
+            if (beacon != null)
+            {
+                beacon.nome = beaconToEdit.nome;
+                beacon.longitude = beaconToEdit.longitude;
+                beacon.latitude = beaconToEdit.latitude;
+                beacon.localizacao = beaconToEdit.localizacao;
+                }*/
+                                        Users = await UserService.GetUsersAsync();
+
+            CloseModal(); // Fecha o modal após a edição
+            startTimer("Utilizador editado com sucesso!", "green");
+        }
+        else
+        {
+            startTimer("Erro ao editar utilizador.", "red");
+        }
+    }
 }

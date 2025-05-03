@@ -1,4 +1,9 @@
 wwwroot\app.css
 wwwroot\bootstrap\bootstrap.min.css
 wwwroot\bootstrap\bootstrap.min.css.map
+wwwroot\data\indoor_map.geojson
 wwwroot\favicon.png
+wwwroot\imagens\elevator_icon.png
+wwwroot\imagens\entrance_door_icon.png
+wwwroot\imagens\entrance_icon.png
+wwwroot\js\openlayers-init.js

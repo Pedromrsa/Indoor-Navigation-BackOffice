@@ -17,8 +17,28 @@
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
     },
     {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\data\\indoor_map.geojson",
+      "PackagePath": "staticwebassets\\data\\indoor_map.geojson"
+    },
+    {
       "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\imagens\\elevator_icon.png",
+      "PackagePath": "staticwebassets\\imagens\\elevator_icon.png"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\imagens\\entrance_door_icon.png",
+      "PackagePath": "staticwebassets\\imagens\\entrance_door_icon.png"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\imagens\\entrance_icon.png",
+      "PackagePath": "staticwebassets\\imagens\\entrance_icon.png"
+    },
+    {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
+      "PackagePath": "staticwebassets\\js\\openlayers-init.js"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.IndoorMappingWebsite.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

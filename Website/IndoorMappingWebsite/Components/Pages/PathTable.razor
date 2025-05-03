@@ -1,4 +1,7 @@
 ﻿@page "/pathstable"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
+@inject IPathService PathService
 @attribute [StreamRendering]
 
 <PageTitle>pathstable</PageTitle>
@@ -133,17 +136,38 @@
     input {
         text-align: center;
     }
+
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
 </style>
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
 
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
-    <li class="navbarItem"><a href="home">Home</a></li>
-    <li class="navbarItem"><a href="usertable">Users</a></li>
-    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
-    <li class="navbarItem"><a class="active" href="pathstable">Paths</a></li>
-    <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+        <li class="navbarItem"><a href="home">Home</a></li>
+        <li class="navbarItem"><a href="usertable">Users</a></li>
+        <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+        <li class="navbarItem"><a class="active" href="pathstable">Paths</a></li>
+        <li class="navbarItem"><a href="logstable">Logs</a></li>
+        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
     </div>
 </ul>
 
@@ -164,6 +188,7 @@
                     <th>Destiny</th>
                     <th>Distance</th>
                     <th>Accessibility</th>
+                    <th>Type</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -172,43 +197,86 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@person.OriginID</td>
-                        <td>@person.DestinyID</td>
-                        <td>@(person.Distance)m</td>
-                        <td>@person.Accessibility</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td>@person.origemId</td>
+                        <td>@person.destinoId</td>
+                        <td>@(person.distancia)m</td>
+                        <td>@person.acessivel</td>
+                        <td>@person.tipoAcessibilidade</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(person)">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.id)">Delete</button></td>
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><input class="form-control" placeholder="Insira a Origem..." /></td>
-                    <td><input class="form-control" placeholder="Insira o Destino..." /></td>
-                    <td><input class="form-control" placeholder="Insira a Distância..." /></td>
-                    <td><input class="form-control" placeholder="Insira a Acessibilidade..." /></td>
+                    <td><InputNumber class="form-control" placeholder="Insert Origin..." @bind-Value="newPath.origemId" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insert Destiny..." @bind-Value="newPath.destinoId" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insert Distance..." @bind-Value="newPath.distancia" /></td>
+                    <td>
+                        <InputSelect @bind-Value=newPath.acessivel class="form-select">
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </InputSelect>
+                    </td>
+                    <td><InputNumber class="form-control" placeholder="Insert Accessibility Type..." @bind-Value="newPath.tipoAcessibilidade" /></td>
                     <td></td>
-                    <td><button type="button" class="btn btn-success">Add</button></td>
+                    <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="pathToEdit" OnValidSubmit="HandleEditSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="origemId" class="form-label">Origin</label>
+                            <InputNumber id="origemId" class="form-control" @bind-Value="pathToEdit.origemId" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="destinoId" class="form-label">Destiny</label>
+                            <InputNumber id="destinoId" class="form-control" @bind-Value="pathToEdit.destinoId" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="distancia" class="form-label">Distance</label>
+                            <InputNumber id="distancia" class="form-control" @bind-Value="pathToEdit.distancia" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobilidade" class="form-label">Mobility</label>
+                            <InputSelect @bind-Value=pathToEdit.acessivel class="form-select">
+                                <option value="true">Available</option>
+                                <option value="false">Unavailable</option>
+                            </InputSelect>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Accessibility Type</label>
+                            <InputNumber id="tipo" class="form-control" @bind-Value="pathToEdit.tipoAcessibilidade" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
-    // Sample data for the table
-    private List<Route> routes = new List<Route>
-{
-    new Route { OriginID = "Entrada ISEP 1", DestinyID = "Entrada B", Distance = 500, Accessibility = "Available" },
-    new Route { OriginID = "1ºPiso B Oeste", DestinyID = "2ºPiso B Oeste", Distance = 50, Accessibility = "Obstructed" },
-    new Route { OriginID = "Entrada B", DestinyID = "1ºPiso B Este", Distance = 300, Accessibility = "Available" },
-    new Route { OriginID = "2ºPiso B Este", DestinyID = "Biblioteca", Distance = 200, Accessibility = "Available" },
-    new Route { OriginID = "Laboratório A", DestinyID = "Sala de Reuniões", Distance = 100, Accessibility = "Obstructed" },
-    new Route { OriginID = "Cafetaria", DestinyID = "Entrada ISEP 1", Distance = 150, Accessibility = "Available" },
-    new Route { OriginID = "1ºPiso B Este", DestinyID = "2ºPiso B Este", Distance = 60, Accessibility = "Obstructed" },
-    new Route { OriginID = "Corredor Principal", DestinyID = "Biblioteca", Distance = 180, Accessibility = "Available" }
-};
-
-
-
+    private List<Caminho> Caminhos = new List<Caminho>();
+    protected override async Task OnInitializedAsync()
+    {
+        Caminhos = await PathService.GetPathsAsync();
+    }
+    private string messageColor = "green";
     // The search query from the input
     private string searchQuery = string.Empty;
 
@@ -218,17 +286,120 @@
     }
 
     // Get the filtered people based on the search query
-    private IEnumerable<Route> FilteredPeople =>
-        routes.Where(p => p.OriginID.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.DestinyID.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Distance.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Accessibility.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-    // Person model for the table data
-    public class Route
+    private IEnumerable<Caminho> FilteredPeople =>
+        Caminhos.Where(p => p.origemId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.destinoId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.distancia.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.acessivel.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.tipoAcessibilidade.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    private CaminhoPost newPath = new();
+    private string message;
+    private CancellationTokenSource? cts;
+
+    private async Task startTimer(string msg, string Color)
     {
-        public string OriginID { get; set; }
-        public string DestinyID { get; set; }
-        public double Distance { get; set; }
-        public string Accessibility { get; set; }
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+    }
+    public async Task HandleValidSubmit()
+    {
+        var success = await PathService.CreatePathAsync(newPath);
+        if (success)
+        {
+            startTimer("Caminho criado com sucesso!", "green");
+            newPath = new(); // limpa o form
+            Caminhos = await PathService.GetPathsAsync();
+        }
+        else
+        {
+            startTimer("Erro ao criar caminho.", "red");
+        }
+    }
+    public async Task HandleDeleteSubmit(int id)
+    {
+        var success = await PathService.DeletePathById(id);
+        if (success)
+        {
+            startTimer("Caminho eliminado com sucesso!", "green");
+            Caminhos = await PathService.GetPathsAsync();
+        }
+        else
+        {
+            startTimer("Erro ao eliminar caminho.", "red");
+        }
+    }
+    private bool showModal = false;
+    private CaminhoPost pathToEdit = new CaminhoPost();
+    private void ShowEditModal(Caminho path)
+    {
+        int tipoacessibilidade = 0;
+        switch(path.tipoAcessibilidade)
+        {
+            case "Rampa":
+                tipoacessibilidade = 1;
+                break;
+            case "Elevador":
+                tipoacessibilidade = 2;
+                break;
+            case "Passagem":
+                tipoacessibilidade = 3;
+                break;
+        }
+        pathToEdit = new CaminhoPost
+            {
+                id=path.id,
+                origemId = path.origemId,
+                destinoId = path.destinoId,
+                distancia = path.distancia,
+                acessivel = path.acessivel,
+                tipoAcessibilidade = tipoacessibilidade
+            };
+        showModal = true; // Exibe o modal
+    }
+
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
+    private async Task HandleEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso = await PathService.UpdatePath(pathToEdit);
+
+        if (sucesso)
+        {
+            /*
+            // Atualizar a lista ou fazer outras ações após a edição
+            var beacon = FilteredBeacons.FirstOrDefault(b => b.id == beaconToEdit.id);
+            if (beacon != null)
+            {
+                beacon.nome = beaconToEdit.nome;
+                beacon.longitude = beaconToEdit.longitude;
+                beacon.latitude = beaconToEdit.latitude;
+                beacon.localizacao = beaconToEdit.localizacao;
+                }*/
+                            Caminhos = await PathService.GetPathsAsync();
+
+            CloseModal(); // Fecha o modal após a edição
+            startTimer("Caminho editado com sucesso!", "green");
+        }
+        else
+        {
+            startTimer("Erro ao editar caminho.", "red");
+        }
     }
 }
