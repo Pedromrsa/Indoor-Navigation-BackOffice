@@ -1,0 +1,466 @@
+﻿@page "/pathsmap"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
+@inject IPathMapService PathMapService
+@inject IInfraestruturaService InfraestruturaService
+@attribute [StreamRendering]
+
+<PageTitle>pathstable</PageTitle>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Navbar Styles */
+    .navbarList {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: darkred;
+        padding: 0 20px;
+        list-style: none;
+        margin: 0;
+        height: 60px;
+    }
+
+    .logo a {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .navbarItem {
+        margin-left: 15px;
+    }
+
+        .navbarItem a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+            .navbarItem a:hover:not(.active) {
+                background-color: #540000;
+            }
+
+            .navbarItem a.active {
+                background-color: gray;
+            }
+
+    /* Center container and buttons */
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .center-container h1 {
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: #343a40;
+        }
+
+    /* Filter input */
+    .search-bar {
+        margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 500px;
+    }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 1.1rem;
+        }
+
+    /* Table Container */
+    .table-container {
+        width: 80%;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        padding: 0;
+    }
+
+    th, td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    th {
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: darkred;
+    }
+
+    button {
+        width: 80px;
+    }
+
+    .addbtn {
+        background-color: darkred;
+        position: sticky;
+        bottom: 0;
+    }
+
+    input {
+        text-align: center;
+    }
+
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+}
+</style>
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
+
+<ul class="navbarList">
+    <li class="logo"><a href="home">IndoorMap</a></li>
+    <div style="display: flex;">
+        <li class="navbarItem"><a href="home">Home</a></li>
+        <li class="navbarItem"><a href="usertable">Users</a></li>
+        <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+        <li class="navbarItem"><a class="active" href="pathstable">Paths</a></li
+        <li class="navbarItem"><a href="logstable">Logs</a></li>
+        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+    </div>
+</ul>
+
+<div class="center-container">
+    <h1>Paths Table</h1>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+        <input type="text" @oninput="OnSearchInput" placeholder="Search by origin, destiny, distance, or accessibility..." class="form-control" />
+    </div>
+
+    <!-- Table with Filtered Data inside a Scrollable Container -->
+    <div class="table-container">
+        <table class="table table-striped m-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Origin</th>
+                    <th>Destiny</th>
+                    <th>Accessibility</th>
+                    <th>Floor</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var person in FilteredPeople)
+                {
+                    <tr>
+                        <td>@(person.nome)</td>
+                        <td>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                if(local.id == person.origemId)
+                                {
+                                    @($"{local.descricao} (Piso {local.piso})")
+
+                                }
+                            }
+                        </td>
+                        <td>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                if (local.id == person.destinoId)
+                                {
+                                    @($"{local.descricao} (Piso {local.piso})")
+                                }
+                            }
+                        </td>
+
+                        @if(person.acessivel)
+                        {
+                            <td>
+                                Available
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Unavailable
+                            </td>
+                        }
+                        <td>@person.piso</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(person)">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.id)">Delete</button></td>
+                    </tr>
+                }
+                <!-- 
+                <tr class="addbtn">
+                <td>
+                <InputSelect @bind-Value=newPath.origemId class="form-select">
+                <option disabled selected value="-1">Select Origin</option>
+                @foreach(var local in Infraestruturas)
+                {
+                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                }
+                </InputSelect>
+                </td>
+                <td>
+                <InputSelect @bind-Value=newPath.destinoId class="form-select">
+                <option disabled selected value="-1">Select Destiny</option>
+                @foreach (var local in Infraestruturas)
+                {
+                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                }
+                </InputSelect>
+                </td>
+                <td><InputNumber class="form-control" placeholder="Insert Distance..." @bind-Value="newPath.distancia" /></td>
+                <td>
+                <InputSelect @bind-Value=newPath.acessivel class="form-select">
+                <option value="true">Available</option>
+                <option value="false">Unavailable</option>
+                </InputSelect>
+                </td>
+                <td><InputNumber class="form-control" placeholder="Insert Accessibility Type..." @bind-Value="newPath.tipoAcessibilidade" /></td>
+                <td></td>
+                <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
+                </tr>-->
+            </tbody>
+        </table>
+    </div>
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="pathToEdit" OnValidSubmit="HandleEditSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Name</label>
+                            <InputText id="tipo" class="form-control" @bind-Value="pathToEdit.nome" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="origemId" class="form-label">Origin</label>
+                            <InputSelect @bind-Value=pathToEdit.origemId class="form-select">
+                                <option disabled selected value="-1">Select Origin</option>
+                                @foreach (var local in Infraestruturas)
+                                {
+                                    <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="destinoId" class="form-label">Destiny</label>
+                            <InputSelect @bind-Value=pathToEdit.destinoId class="form-select">
+                                <option disabled selected value="-1">Select Origin</option>
+                                @foreach (var local in Infraestruturas)
+                                {
+                                    <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="mobilidade" class="form-label">Mobility</label>
+                            <InputSelect @bind-Value=pathToEdit.acessivel class="form-select">
+                                <option value="true">Available</option>
+                                <option value="false">Unavailable</option>
+                            </InputSelect>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Accessibility Type</label>
+                            <InputNumber id="tipo" class="form-control" @bind-Value="pathToEdit.piso" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Caminho2> Caminhos = new List<Caminho2>();
+
+    private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();
+    protected override async Task OnInitializedAsync()
+    {
+        Infraestruturas = await InfraestruturaService.GetInfraestruturasAsync();
+        Caminhos = await PathMapService.GetPathsAsync();
+        Console.WriteLine();
+    }
+    private string messageColor = "green";
+    // The search query from the input
+    private string searchQuery = string.Empty;
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+    }
+
+    // Get the filtered people based on the search query
+    private IEnumerable<Caminho2> FilteredPeople =>
+    Caminhos.Where(p =>
+    (p.nome?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+    (GetInfraDescricao(p.origemId)?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+    (GetInfraDescricao(p.destinoId)?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+    p.acessivel.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+    (p.piso.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+);
+
+    private Caminho2 newPath = new();
+    private string message;
+    private CancellationTokenSource? cts;
+
+    private async Task startTimer(string msg, string Color)
+    {
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+    }
+    public async Task HandleValidSubmit()
+    {
+        if(newPath.origemId!=-1 && newPath.destinoId!=-1)
+        {
+            var success = await PathMapService.CreatePathAsync(newPath);
+            if (success)
+            {
+                startTimer("Caminho criado com sucesso!", "green");
+                newPath = new(); // limpa o form
+                Caminhos = await PathMapService.GetPathsAsync();
+            }
+            else
+            {
+                startTimer("Erro ao criar caminho.", "red");
+            }
+        }
+        else
+        {
+            startTimer("Selecione origem e destino validos.", "red");
+        }
+    }
+    public async Task HandleDeleteSubmit(int id)
+    {
+        var success = await PathMapService.DeletePathById(id);
+        if (success)
+        {
+            startTimer("Caminho eliminado com sucesso!", "green");
+            Caminhos = await PathMapService.GetPathsAsync();
+        }
+        else
+        {
+            startTimer("Erro ao eliminar caminho.", "red");
+        }
+    }
+    private bool showModal = false;
+    private Caminho2 pathToEdit = new Caminho2();
+    private void ShowEditModal(Caminho2 path)
+    {
+      
+        pathToEdit = new Caminho2
+            {
+                id=path.id,
+                nome = path.nome,
+                origemId = path.origemId,
+                destinoId = path.destinoId,
+                acessivel = path.acessivel,
+                piso = path.piso,
+            };
+        showModal = true; // Exibe o modal
+    }
+
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
+    private async Task HandleEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso = await PathMapService.UpdatePath(pathToEdit);
+
+        if (sucesso)
+        {
+         
+            Caminhos = await PathMapService.GetPathsAsync();
+
+            CloseModal(); // Fecha o modal após a edição
+            startTimer("Caminho editado com sucesso!", "green");
+        }
+        else
+        {
+            startTimer("Erro ao editar caminho.", "red");
+        }
+    }
+    private string GetInfraDescricao(int id)
+    {
+        var infra = Infraestruturas.FirstOrDefault(i => i.id == id);
+        return infra != null ? $"{infra.descricao} (Piso {infra.piso})" : "";
+    }
+
+}

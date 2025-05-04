@@ -8,6 +8,7 @@ let map;
 let mapClickListener = null;
 let draw;
 let coordinate;
+let dotNetHelper;
 
 let colors = [
     "#e6194b", // vermelho
@@ -61,9 +62,9 @@ function loadScripts() {
 }
 
 // Função para inicializar o mapa
-function initMap() {
+function initMap(dotNetRef) {
     console.log('Inicializando o mapa...');
-
+    dotNetHelper = dotNetRef;
     // Variável para o nível selecionado
     let nivelSelecionado = '1';
 
@@ -304,8 +305,9 @@ function initMap() {
 
 
     console.log('Mapa inicializado com sucesso!');
-    loadPathsFromData(caminhosSalvos);
+    //loadPathsFromData(caminhosSalvos);
 }
+
 
 function enableClick() {
     if (!mapClickListener) {
@@ -330,6 +332,19 @@ function enableClick() {
         map.on('click', mapClickListener);
     }
 }
+/*
+function enableClick(dotNetHelper) {
+    console.log(dotNetHelper);
+    if (!mapClickListener) {
+        mapClickListener = function (event) {
+            clickCoordinate = event.coordinate;
+            coordinate = ol.proj.toLonLat(clickCoordinate);
+            const pixel = map.getEventPixel(event.originalEvent);
+            dotNetHelper.invokeMethodAsync('OnMapClicked', pixel[0], pixel[1]);
+        };
+        map.on('click', mapClickListener);
+    }
+}*/
 
 function disableClick() {
     if (mapClickListener) {
@@ -379,10 +394,10 @@ function createPath(level, name = "") {
         const coordinatesLONLAT = coordinates.map(coord =>
             ol.proj.toLonLat(coord) 
         );
-
+        
         const pathData = {
-            nome: name,
-            level: level,
+            //nome: name,
+            //level: level,
             coordinates: coordinatesLONLAT
         };
 
@@ -393,8 +408,10 @@ function createPath(level, name = "") {
         feature.set('name', name);
         feature.set('level', level); // Associa o caminho ao nível selecionado no dropdown
         map.removeInteraction(draw);
-        enableClick();
 
+        console.log(dotNetHelper);
+        dotNetHelper.invokeMethodAsync('ShowPathModal', JSON.stringify(coordinatesLONLAT));
+        enableClick();
         // Exibe uma mensagem confirmando o caminho desenhado
         //alert(`Caminho para o nível ${levelSelector.value} desenhado com sucesso!`);
         updateFeatureVisibility();
@@ -487,14 +504,18 @@ function addOrUpdateUser(userId, longitude, latitude, name = "") {
 
 function loadPathsFromData(data) {
     data.forEach(function (path) {
-        const coords3857 = path.coordinates.map(coord =>
+
+        const coord = JSON.parse(path.listaCoordenadas);
+        console.log(coord)
+
+        const coords3857 = coord.map(coord =>
             ol.proj.fromLonLat(coord) // Converte [lon, lat] para EPSG:3857
         );
 
         const feature = new ol.Feature({
             geometry: new ol.geom.LineString(coords3857),
-            name: path.nome,
-            level: path.level
+            //name: path.nome,
+            level: path.piso.toString() 
         });
 
         
@@ -512,6 +533,6 @@ function loadPathsFromData(data) {
 }
 
 const caminhosSalvos = [
-    { "nome": "123", "level": "1", "coordinates": [[-8.628587729472004, 41.18329453268572], [-8.628587925564599, 41.183281840748975], [-8.628589690397952, 41.18326176977425], [-8.628612241046373, 41.18324479798929], [-8.628649106454228, 41.18325660444884], [-8.628658714991381, 41.18324981573488]] }
+    { id: 1, "nome": "123", "piso": "1", "listaCoordenadas": "[[-8.628587729472004, 41.18329453268572], [-8.628587925564599, 41.183281840748975], [-8.628589690397952, 41.18326176977425], [-8.628612241046373, 41.18324479798929], [-8.628649106454228, 41.18325660444884], [-8.628658714991381, 41.18324981573488]]" }
 ]
 

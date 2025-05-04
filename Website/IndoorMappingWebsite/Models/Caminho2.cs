@@ -8,6 +8,6 @@
         public int destinoId { get; set; } = -1;
         public bool acessivel { get; set; } = true;
         public int piso { get; set; }
-        public List<List<double>> coordinates { get; set; }
+        public string listaCoordenadas { get; set; }
     }
 }
