@@ -66,8 +66,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>t50fbxrxc5</Fingerprint>
-      <Integrity>b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI=</Integrity>
+      <Fingerprint>o96u10e7sd</Fingerprint>
+      <Integrity>PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\data\indoor_map.geojson'))</OriginalItemSpec>
@@ -162,6 +162,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\IndoorMappingWebsite.951wh8ellq.bundle.scp.css'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\backup.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IndoorMappingWebsite</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IndoorMappingWebsite</BasePath>
+      <RelativePath>js/backup.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>f2m4xbr4x6</Fingerprint>
+      <Integrity>t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\backup.js'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))">
       <SourceType>Package</SourceType>
       <SourceId>IndoorMappingWebsite</SourceId>
@@ -174,8 +192,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>1ofom77x81</Fingerprint>
-      <Integrity>UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=</Integrity>
+      <Fingerprint>ei3m59q6ig</Fingerprint>
+      <Integrity>RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))</OriginalItemSpec>

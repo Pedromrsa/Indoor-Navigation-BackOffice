@@ -262,7 +262,7 @@
                             <option value="false">Unavailable</option>
                         </InputSelect>
                     </td>
-                    <td><InputNumber class="form-control" placeholder="Insert Accessibility Type..." @bind-Value="newPath.tipoAcessibilidade" /></td>
+                    <td><InputNumber class="form-control" placeholder="Insert Accessibility Type..." @bind-Value="newPath.acessibilidadeId" /></td>
                     <td></td>
                     <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
@@ -317,7 +317,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="tipo" class="form-label">Accessibility Type</label>
-                            <InputNumber id="tipo" class="form-control" @bind-Value="pathToEdit.tipoAcessibilidade" />
+                            <InputNumber id="tipo" class="form-control" @bind-Value="pathToEdit.acessibilidadeId" />
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -436,7 +436,7 @@
                 destinoId = path.destinoId,
                 distancia = path.distancia,
                 acessivel = path.acessivel,
-                tipoAcessibilidade = tipoacessibilidade
+                acessibilidadeId = tipoacessibilidade
             };
         showModal = true; // Exibe o modal
     }

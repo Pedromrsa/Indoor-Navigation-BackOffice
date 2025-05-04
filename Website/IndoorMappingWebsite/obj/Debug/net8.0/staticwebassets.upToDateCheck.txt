@@ -6,4 +6,5 @@ wwwroot\favicon.png
 wwwroot\imagens\elevator_icon.png
 wwwroot\imagens\entrance_door_icon.png
 wwwroot\imagens\entrance_icon.png
+wwwroot\js\backup.js
 wwwroot\js\openlayers-init.js

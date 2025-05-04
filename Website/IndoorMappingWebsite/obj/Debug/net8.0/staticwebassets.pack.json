@@ -37,6 +37,10 @@
       "PackagePath": "staticwebassets\\imagens\\entrance_icon.png"
     },
     {
+      "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\backup.js",
+      "PackagePath": "staticwebassets\\js\\backup.js"
+    },
+    {
       "Id": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
       "PackagePath": "staticwebassets\\js\\openlayers-init.js"
     },

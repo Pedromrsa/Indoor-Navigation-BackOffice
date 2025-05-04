@@ -16,6 +16,6 @@
         public int destinoId { get; set; } = -1;
         public int distancia { get; set; }
         public bool acessivel { get; set; } = true;
-        public int tipoAcessibilidade { get; set; } 
+        public int acessibilidadeId { get; set; } 
     }
 }

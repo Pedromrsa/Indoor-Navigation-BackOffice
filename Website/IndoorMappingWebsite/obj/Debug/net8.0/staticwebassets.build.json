@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Z0maPqlUW291GK2UF8OR8qML67eTI8tABqRkG5FEthQ=",
+  "Hash": "l4oNLqjx8Z73OtbhyQSsy0YXvcdUEk9VD+IKUp4MaFQ=",
   "Source": "IndoorMappingWebsite",
   "BasePath": "_content/IndoorMappingWebsite",
   "Mode": "Default",
@@ -136,8 +136,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "t50fbxrxc5",
-      "Integrity": "b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI=",
+      "Fingerprint": "o96u10e7sd",
+      "Integrity": "PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\data\\indoor_map.geojson"
@@ -227,6 +227,27 @@
       "OriginalItemSpec": "wwwroot\\imagens\\entrance_icon.png"
     },
     {
+      "Identity": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\backup.js",
+      "SourceId": "IndoorMappingWebsite",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\",
+      "BasePath": "_content/IndoorMappingWebsite",
+      "RelativePath": "js/backup#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "f2m4xbr4x6",
+      "Integrity": "t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\backup.js"
+    },
+    {
       "Identity": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
       "SourceId": "IndoorMappingWebsite",
       "SourceType": "Discovered",
@@ -241,8 +262,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "1ofom77x81",
-      "Integrity": "UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=",
+      "Fingerprint": "ei3m59q6ig",
+      "Integrity": "RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\openlayers-init.js"
@@ -506,7 +527,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "443711"
+          "Value": "446827"
         },
         {
           "Name": "Content-Type",
@@ -514,11 +535,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI=\""
+          "Value": "\"PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 00:20:55 GMT"
+          "Value": "Sat, 03 May 2025 16:24:11 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -528,12 +549,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI="
+          "Value": "sha256-PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM="
         }
       ]
     },
     {
-      "Route": "data/indoor_map.t50fbxrxc5.geojson",
+      "Route": "data/indoor_map.o96u10e7sd.geojson",
       "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\data\\indoor_map.geojson",
       "Selectors": [],
       "ResponseHeaders": [
@@ -543,7 +564,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "443711"
+          "Value": "446827"
         },
         {
           "Name": "Content-Type",
@@ -551,11 +572,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI=\""
+          "Value": "\"PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 00:20:55 GMT"
+          "Value": "Sat, 03 May 2025 16:24:11 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -565,7 +586,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "t50fbxrxc5"
+          "Value": "o96u10e7sd"
         },
         {
           "Name": "label",
@@ -573,7 +594,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-b1I/DFXigkvWyeSF2YA8hzQ87NkYYvBA4luLEwwB8oI="
+          "Value": "sha256-PLx1frn3slE5AXwvmibVQb3CJqeg9tAEv81YkStrfBM="
         }
       ]
     },
@@ -1070,8 +1091,8 @@
       ]
     },
     {
-      "Route": "js/openlayers-init.1ofom77x81.js",
-      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
+      "Route": "js/backup.f2m4xbr4x6.js",
+      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\backup.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1080,7 +1101,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "10222"
+          "Value": "3128"
         },
         {
           "Name": "Content-Type",
@@ -1088,11 +1109,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\""
+          "Value": "\"t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 03:51:23 GMT"
+          "Value": "Sat, 03 May 2025 16:24:11 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1102,7 +1123,89 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1ofom77x81"
+          "Value": "f2m4xbr4x6"
+        },
+        {
+          "Name": "label",
+          "Value": "js/backup.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA="
+        }
+      ]
+    },
+    {
+      "Route": "js/backup.js",
+      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\backup.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3128"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 03 May 2025 16:24:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-t8WOFFTPTY4odoChAunQCsn4MeEAthZ9MHUG4i2/weA="
+        }
+      ]
+    },
+    {
+      "Route": "js/openlayers-init.ei3m59q6ig.js",
+      "AssetFile": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\wwwroot\\js\\openlayers-init.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17251"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 04 May 2025 16:12:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ei3m59q6ig"
         },
         {
           "Name": "label",
@@ -1110,7 +1213,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="
+          "Value": "sha256-RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0="
         }
       ]
     },
@@ -1125,7 +1228,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "10222"
+          "Value": "17251"
         },
         {
           "Name": "Content-Type",
@@ -1133,11 +1236,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc=\""
+          "Value": "\"RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 03 May 2025 03:51:23 GMT"
+          "Value": "Sun, 04 May 2025 16:12:11 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1147,7 +1250,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-UWf7fDPhHZhxmmQuW8GLE8OH4kmTxUFyAkWMHmk8/wc="
+          "Value": "sha256-RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0="
         }
       ]
     }
