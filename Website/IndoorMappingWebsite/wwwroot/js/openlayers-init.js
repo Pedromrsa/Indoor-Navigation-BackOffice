@@ -9,6 +9,31 @@ let mapClickListener = null;
 let draw;
 let coordinate;
 
+let colors = [
+    "#e6194b", // vermelho
+    "#3cb44b", // verde
+    "#ffe119", // amarelo
+    "#0082c8", // azul
+    "#f58231", // laranja
+    "#911eb4", // roxo
+    "#46f0f0", // ciano claro
+    "#f032e6", // rosa forte
+    "#d2f53c", // verde-limão
+    "#fabebe", // rosa claro
+    "#008080", // verde-azulado
+    "#e6beff", // lavanda
+    "#aa6e28", // castanho
+    "#fffac8", // amarelo claro
+    "#800000", // vinho
+    "#aaffc3", // verde menta
+    "#808000", // verde oliva
+    "#ffd8b1", // pêssego claro
+    "#000080", // azul marinho
+    "#808080"  // cinzento
+];
+
+let colorIndex = 0;
+
 function loadScripts() {
     var olStylesheet = document.createElement('link');
     olStylesheet.rel = 'stylesheet';
@@ -279,6 +304,7 @@ function initMap() {
 
 
     console.log('Mapa inicializado com sucesso!');
+    loadPathsFromData(caminhosSalvos);
 }
 
 function enableClick() {
@@ -324,12 +350,7 @@ function updateFeatureVisibility() {
         const visible = (level === levelSelector.value);
 
         // Exibe ou oculta o segmento com base no nível
-        feature.setStyle(visible ? new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: 'blue',
-                width: 3
-            })
-        }) : null);
+        feature.setStyle(visible ? feature.get("originalStyle"): null);
     });
 }
 
@@ -339,10 +360,8 @@ function hideContextMenu() {
 }
 
 
-window.createPath = () => {
-    const nome = prompt("Nome do caminho:");
-    if (!nome) return;
-
+function createPath(level, name = "") {
+   
     const draw = new ol.interaction.Draw({
         source: caminhosSource,
         type: 'LineString'
@@ -354,13 +373,30 @@ window.createPath = () => {
 
     draw.on('drawend', function (e) {
         const feature = e.feature;
-        feature.set('name', nome);
-        feature.set('level', levelSelector.value); // Associa o caminho ao nível selecionado no dropdown
+
+        const geometry = feature.getGeometry();
+        const coordinates = geometry.getCoordinates();
+        const coordinatesLONLAT = coordinates.map(coord =>
+            ol.proj.toLonLat(coord) 
+        );
+
+        const pathData = {
+            nome: name,
+            level: level,
+            coordinates: coordinatesLONLAT
+        };
+
+        // Aqui você pode enviar pathData para seu backend ou salvar localmente
+        console.log("Dados do caminho:", JSON.stringify(pathData));
+
+
+        feature.set('name', name);
+        feature.set('level', level); // Associa o caminho ao nível selecionado no dropdown
         map.removeInteraction(draw);
         enableClick();
 
         // Exibe uma mensagem confirmando o caminho desenhado
-        alert(`Caminho para o nível ${levelSelector.value} desenhado com sucesso!`);
+        //alert(`Caminho para o nível ${levelSelector.value} desenhado com sucesso!`);
         updateFeatureVisibility();
     });
 };
@@ -398,7 +434,8 @@ function addBeacon(longitude, latitude, level, name = "") {
     const beaconFeature = new ol.Feature({
         geometry: new ol.geom.Point(beaconLocation),
         level: level.toString(),
-        name: name
+        name: name,
+        beacon: 'yes'
     });
 
     beaconFeature.set("originalStyle", iconWithLabelStyle);
@@ -409,4 +446,72 @@ function addBeacon(longitude, latitude, level, name = "") {
     updateFeatureVisibility();
     hideContextMenu();
 }
+
+function addOrUpdateUser(userId, longitude, latitude, name = "") {
+    if (longitude == null || latitude == null) return;
+
+    const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+    const existingFeature = vectorSource.getFeatures().find(f => f.get("userId") === userId);
+
+    if (existingFeature) {
+        existingFeature.getGeometry().setCoordinates(userLocation);
+        return;
+    }
+
+    const userStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+            src: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_red.png',
+            scale: 1,
+            anchor: [0.5, 1]
+        }),
+        text: new ol.style.Text({
+            text: name || userId,
+            offsetY: -25,
+            scale: 1.2,
+            fill: new ol.style.Fill({ color: '#000' }),
+            stroke: new ol.style.Stroke({ color: '#fff', width: 2 }),
+            textAlign: 'center'
+        })
+    });
+
+    const userFeature = new ol.Feature({
+        geometry: new ol.geom.Point(userLocation),
+        userId: userId,
+        name: name
+    });
+
+    userFeature.setStyle(userStyle);
+    vectorSource.addFeature(userFeature);
+}
+
+function loadPathsFromData(data) {
+    data.forEach(function (path) {
+        const coords3857 = path.coordinates.map(coord =>
+            ol.proj.fromLonLat(coord) // Converte [lon, lat] para EPSG:3857
+        );
+
+        const feature = new ol.Feature({
+            geometry: new ol.geom.LineString(coords3857),
+            name: path.nome,
+            level: path.level
+        });
+
+        
+        feature.setStyle(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: colors[colorIndex],
+                width: 2
+            })
+        }));
+
+        caminhosSource.addFeature(feature);
+    });
+    colorIndex++;
+    updateFeatureVisibility(); 
+}
+
+const caminhosSalvos = [
+    { "nome": "123", "level": "1", "coordinates": [[-8.628587729472004, 41.18329453268572], [-8.628587925564599, 41.183281840748975], [-8.628589690397952, 41.18326176977425], [-8.628612241046373, 41.18324479798929], [-8.628649106454228, 41.18325660444884], [-8.628658714991381, 41.18324981573488]] }
+]
 

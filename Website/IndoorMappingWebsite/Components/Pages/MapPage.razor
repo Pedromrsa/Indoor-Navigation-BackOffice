@@ -6,6 +6,11 @@
 @inject IJSRuntime JS
 @inject IBeaconService BeaconService
 
+@inject IPathService PathService
+
+@inject IAccessibilityService AccessibilityService
+@inject IInfraestruturaService InfraestruturaService
+
 <style>
     body {
     margin: 0;
@@ -78,16 +83,16 @@
 <div id="map" style="width: 100%; height: calc(100vh - 60px); border: 1px solid #ccc;"></div>
 
 <div id="context-menu" style="display:none; position:absolute; background:#fff; border:1px solid #ccc; z-index:1000; padding:8px; border-radius:6px;">
-    <button @onclick="() => ShowEditModal()">Put Beacon</button><br />
-    <button onclick="createPath()">Start Path</button>
+    <button @onclick="() => ShowBeaconEditModal()">Put Beacon</button><br />
+    <button @onclick="() => ShowPathEditModal()">Start Path</button>
 </div>
 
-<div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+<div class="modal" tabindex="-1" style="display:@(showBeaconModal ? "block" : "none")" aria-hidden="@(showBeaconModal ? "false" : "true")">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Create Beacon</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseBeaconModal"></button>
             </div>
             <div class="modal-body">
                 <EditForm Model="beaconToEdit" OnValidSubmit="HandleEditSubmit">
@@ -111,13 +116,74 @@
     </div>
 </div>
 
+
+<div class="modal" tabindex="-1" style="display:@(showPathModal ? "block" : "none")" aria-hidden="@(showPathModal ? "false" : "true")">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Path</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="ClosePathModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="pathToEdit" OnValidSubmit="HandlePathEditSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Name</label>
+                        <InputText id="nome" class="form-control" @bind-Value="pathToEdit.nome" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="origemId" class="form-label">Origin</label>
+                        <InputSelect @bind-Value=pathToEdit.origemId class="form-select">
+                            <option disabled selected value="-1">Select Origin</option>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="destinoId" class="form-label">Destiny</label>
+                        <InputSelect @bind-Value=pathToEdit.destinoId class="form-select">
+                            <option disabled selected value="-1">Select Origin</option>
+                            @foreach (var local in Infraestruturas)
+                            {
+                                <option value="@local.id">@($"{local.descricao} (Piso {local.piso})")</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="mobilidade" class="form-label">Mobility</label>
+                        <InputSelect @bind-Value=pathToEdit.acessivel class="form-select">
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </InputSelect>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
 
     private List<Beacon> beacons = new List<Beacon>();
+    private List<Caminho> Caminhos = new List<Caminho>();
+    private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();
 
     protected override async Task OnInitializedAsync()
     {
         beacons = await BeaconService.GetBeaconsAsync();
+        Infraestruturas = await InfraestruturaService.GetInfraestruturasAsync();
+        Caminhos = await PathService.GetPathsAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -145,33 +211,31 @@
         await JSRuntime.InvokeVoidAsync("addBeacon", longitude, latitude, level, nome);
     }
 
-    private async Task AddPath(double longitude, double latitude)
+    private async Task AddPath(string name, int level)
     {
         // Chama o JavaScript para adicionar um caminho no mapa
-        await JSRuntime.InvokeVoidAsync("addPath", longitude, latitude);
+        await JSRuntime.InvokeVoidAsync("createPath", level.ToString(), name);
     }
 
 
-    private bool showModal = false;  
+    private bool showBeaconModal = false;  
 
     private Beacon beaconToEdit = new Beacon();
     private double[] coordinates;
 
-    private async void ShowEditModal()
+    private async void ShowBeaconEditModal()
     {
         coordinates = await JSRuntime.InvokeAsync<double[]>("mapCoordinates");
         beaconToEdit.longitude = coordinates[0];
         beaconToEdit.latitude = coordinates[1];
         beaconToEdit.piso = await JSRuntime.InvokeAsync<int>("getCurrentLevel");
-        showModal = true;
+        showBeaconModal = true;
 
     }
-
-    private void CloseModal()
+    private void CloseBeaconModal()
     {
-        showModal = false; 
+        showBeaconModal = false;
     }
-
     private async Task HandleEditSubmit()
     {
         var sucesso = await BeaconService.CreateBeaconAsync(beaconToEdit);
@@ -179,6 +243,42 @@
         {
             await AddBeacon(beaconToEdit.longitude, beaconToEdit.latitude, beaconToEdit.piso, beaconToEdit.nome);
         }
-        CloseModal();
+        CloseBeaconModal();
     }
+
+    //////////// <summary>
+    /// ////////////////////////////
+    /// </summary>
+
+    /// 
+    private bool showPathModal = false;
+    private Caminho2 pathToEdit = new Caminho2();
+    private async void ShowPathEditModal()
+    {
+        pathToEdit.piso = await JSRuntime.InvokeAsync<int>("getCurrentLevel");
+        await AddPath(pathToEdit.nome, pathToEdit.piso);
+        showPathModal = true; // Exibe o modal
+    }
+
+    private void ClosePathModal()
+    {
+        showPathModal = false; // Fecha o modal
+    }
+    private async Task HandlePathEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso= true; //= await PathService.CreatePathAsync(pathToEdit);
+
+        if (sucesso)
+        {
+            
+        }
+        ClosePathModal();
+    }
+    private string GetInfraDescricao(int id)
+    {
+        var infra = Infraestruturas.FirstOrDefault(i => i.id == id);
+        return infra != null ? $"{infra.descricao} (Piso {infra.piso})" : "";
+    }
+
 }
