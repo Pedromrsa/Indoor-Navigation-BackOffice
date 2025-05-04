@@ -17,20 +17,16 @@ let colors = [
     "#0082c8", // azul
     "#f58231", // laranja
     "#911eb4", // roxo
-    "#46f0f0", // ciano claro
     "#f032e6", // rosa forte
     "#d2f53c", // verde-limão
-    "#fabebe", // rosa claro
     "#008080", // verde-azulado
     "#e6beff", // lavanda
     "#aa6e28", // castanho
     "#fffac8", // amarelo claro
     "#800000", // vinho
-    "#aaffc3", // verde menta
     "#808000", // verde oliva
     "#ffd8b1", // pêssego claro
     "#000080", // azul marinho
-    "#808080"  // cinzento
 ];
 
 let colorIndex = 0;
@@ -286,7 +282,7 @@ function initMap(dotNetRef) {
             const level = feature.get('level');
             const levelList = level ? level.split(';') : [];
             if (!levelList.includes(nivelSelecionado)) return null;
-
+            
             return new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: 'blue',
@@ -403,7 +399,25 @@ function createPath(level, name = "") {
 
         // Aqui você pode enviar pathData para seu backend ou salvar localmente
         console.log("Dados do caminho:", JSON.stringify(pathData));
+        const color = colors[colorIndex % colors.length]; // evita overflow
+        const style = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'blue',
+                width: 2
+            }),
+            text: new ol.style.Text({
+                text: name || "Sem nome",
+                font: '18px Calibri,sans-serif',
+                fill: new ol.style.Fill({ color: '#000' }),
+                stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
+                placement: 'line',
+                overflow: true,
+                maxAngle: Math.PI / 4
+            })
+        });
 
+        feature.setStyle(style);
+        feature.set('originalStyle', style);
 
         feature.set('name', name);
         feature.set('level', level); // Associa o caminho ao nível selecionado no dropdown
@@ -518,17 +532,30 @@ function loadPathsFromData(data) {
             level: path.piso.toString() 
         });
 
-        
-        feature.setStyle(new ol.style.Style({
+        const color = colors[colorIndex % colors.length]; // evita overflow
+        const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: colors[colorIndex],
+                color: 'blue',
                 width: 2
+            }),
+            text: new ol.style.Text({
+                text: path.nome || "Sem nome",
+                font: '18px Calibri,sans-serif',
+                fill: new ol.style.Fill({ color: '#000' }),
+                stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
+                placement: 'line',
+                overflow: true,
+                maxAngle: Math.PI / 4
             })
-        }));
+        });
+        
+        feature.setStyle(style);
+        feature.set('originalStyle', style); // Importante para visibilidade dinâmica
 
         caminhosSource.addFeature(feature);
+        colorIndex++;
     });
-    colorIndex++;
+    
     updateFeatureVisibility(); 
 }
 
