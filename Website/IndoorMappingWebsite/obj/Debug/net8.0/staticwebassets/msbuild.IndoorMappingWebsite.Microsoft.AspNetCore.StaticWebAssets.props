@@ -192,8 +192,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ei3m59q6ig</Fingerprint>
-      <Integrity>RsQ+tXNFFBptm+ovz/ujLqWoywaLpSFmnvmr61D59B0=</Integrity>
+      <Fingerprint>zbwz0toy34</Fingerprint>
+      <Integrity>byIPuKno5qtQAHUHTwLuCiafdUE4P1dRnA5Ed0NonYI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\openlayers-init.js'))</OriginalItemSpec>

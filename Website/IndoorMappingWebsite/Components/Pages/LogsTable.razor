@@ -1,5 +1,9 @@
 ﻿@page "/logstable"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
 @attribute [StreamRendering]
+@inject ILogService LogService
+@inject IUserService userService
 
 <PageTitle>logstable</PageTitle>
 
@@ -133,23 +137,43 @@
     input {
         text-align: center;
     }
-</style>
 
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+</style>
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
-    <li class="navbarItem"><a href="home">Home</a></li>
-    <li class="navbarItem"><a href="map">Map</a></li>
-    <li class="navbarItem"><a href="usertable">Users</a></li>
-    <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
-    <li class="navbarItem"><a href="pathsmap">Paths</a></li>
-    <li class="navbarItem"><a class="active" href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+        <li class="navbarItem"><a href="home">Home</a></li>
+        <li class="navbarItem"><a href="map">Map</a></li>
+        <li class="navbarItem"><a href="usertable">Users</a></li>
+        <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
+        <li class="navbarItem"><a href="pathsmap">Paths</a></li>
+        <li class="navbarItem"><a class="active" href="logstable">Logs</a></li>
+        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
     </div>
 </ul>
 
 <div class="center-container">
-    <h1>Beacons Table</h1>
+    <h1>Logs Table</h1>
 
     <!-- Search Input -->
     <div class="search-bar">
@@ -172,11 +196,19 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@person.User</td>
-                        <td>@person.Action</td>
-                        <td>@person.Date</td>
-                        <td>@person.Hour</td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td>
+                            @foreach(var user in Users)
+                            {
+                                if(person.usuarioId == user.usuarioId)
+                                {
+                                    @user.email
+                                }
+                            }
+                        </td>
+                        <td>@person.acao</td>
+                        <td>@person.dataHora.ToString("dd/MM/yy")</td>
+                        <td>@person.dataHora.ToString("HH:mm")</td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.id)">Delete</button></td>
                     </tr>
                 }
             </tbody>
@@ -186,21 +218,13 @@
 
 @code {
     // Sample data for the table
-    private List<Logs> people = new List<Logs>
-{
-    new Logs { User = "john@mail", Action = "Changed Path", Date = new DateOnly(2025, 4, 10), Hour = new TimeOnly(9, 30) },
-    new Logs { User = "jane@mail", Action = "Added Beacon", Date = new DateOnly(2025, 4, 9), Hour = new TimeOnly(14, 15) },
-    new Logs { User = "michael@mail", Action = "Deleted Route", Date = new DateOnly(2025, 4, 8), Hour = new TimeOnly(16, 45) },
-    new Logs { User = "sara@mail", Action = "Edited Beacon", Date = new DateOnly(2025, 4, 10), Hour = new TimeOnly(11, 5) },
-    new Logs { User = "tom@mail", Action = "Viewed Log", Date = new DateOnly(2025, 4, 7), Hour = new TimeOnly(10, 0) },
-    new Logs { User = "angela@mail", Action = "Changed Path", Date = new DateOnly(2025, 4, 6), Hour = new TimeOnly(13, 30) },
-    new Logs { User = "david@mail", Action = "Added Route", Date = new DateOnly(2025, 4, 5), Hour = new TimeOnly(8, 20) },
-    new Logs { User = "steve@mail", Action = "Deleted Beacon", Date = new DateOnly(2025, 4, 4), Hour = new TimeOnly(17, 10) },
-    new Logs { User = "emily@mail", Action = "Logged In", Date = new DateOnly(2025, 4, 3), Hour = new TimeOnly(9, 0) },
-    new Logs { User = "robert@mail", Action = "Changed Path", Date = new DateOnly(2025, 4, 2), Hour = new TimeOnly(15, 45) }
-};
-
-
+    private List<Logs> Logs = new List<Logs>();
+    private List<UserTable.UserGet> Users = new List<UserTable.UserGet>();
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userService.GetUsersAsync();
+        Logs = await LogService.GetLogsAsync();
+    }
 
     // The search query from the input
     private string searchQuery = string.Empty;
@@ -212,16 +236,44 @@
 
     // Get the filtered people based on the search query
     private IEnumerable<Logs> FilteredPeople =>
-        people.Where(p => p.User.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Action.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Date.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Hour.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-    // Person model for the table data
-    public class Logs
+        Logs.Where(p => p.acao.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        p.dataHora.ToString("dd/MM/yy").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        p.dataHora.ToString("HH:mm").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        Users.Any(u => u.usuarioId == p.usuarioId && u.email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)));
+    private string message;
+    public async Task HandleDeleteSubmit(int id)
     {
-        public string User { get; set; }
-        public string Action { get; set; }
-        public DateOnly Date { get; set; }
-        public TimeOnly Hour { get; set; }
+        var success = await LogService.DeleteLogAsync(id);
+        if (success)
+        {
+            startTimer("Log eliminada com sucesso!", "green");
+            Logs = await LogService.GetLogsAsync();
+        }
+        else
+        {
+            startTimer("Erro ao eliminar log.", "red");
+        }
+
+    }
+    private string messageColor = "green";
+    private CancellationTokenSource? cts;
+    private async Task startTimer(string msg, string Color)
+    {
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
     }
 }

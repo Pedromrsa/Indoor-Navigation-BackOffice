@@ -19,6 +19,7 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IPathMapService, PathMapService>();
 builder.Services.AddScoped<IAccessibilityService, AccessibilityService>();
 builder.Services.AddScoped<IInfraestruturaService, InfraestruturaService>();
+builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<HttpClient>(sp =>
     new HttpClient { BaseAddress = new Uri("https://isepindoornavigationapi-vgq7.onrender.com") });
 
