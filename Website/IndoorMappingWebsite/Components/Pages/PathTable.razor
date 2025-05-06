@@ -5,6 +5,8 @@
 @inject IAccessibilityService AccessibilityService
 @inject IInfraestruturaService InfraestruturaService
 @attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>pathstable</PageTitle>
 
@@ -170,7 +172,9 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a class="active" href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+        <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+
     </div>
 </ul>
 
@@ -263,7 +267,15 @@
                             <option value="false">Unavailable</option>
                         </InputSelect>
                     </td>
-                    <td><InputNumber class="form-control" placeholder="Insert Accessibility Type..." @bind-Value="newPath.acessibilidadeId" /></td>
+                    <td>
+                        <InputSelect @bind-Value=newPath.acessibilidadeId class="form-select">
+                            <option value="-1" selected disabled>Acessibility Type</option>
+                                @foreach (var type in Acessibilities)
+                                {
+                                <option value="@type.id">@type.tipo</option>
+                                }
+                        </InputSelect>
+                    </td>
                     <td></td>
                     <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
@@ -310,7 +322,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="mobilidade" class="form-label">Mobility</label>
+                            <label for="mobilidade" class="form-label">Accessible</label>
                             <InputSelect @bind-Value=pathToEdit.acessivel class="form-select">
                                 <option value="true">Available</option>
                                 <option value="false">Unavailable</option>
@@ -318,7 +330,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="tipo" class="form-label">Accessibility Type</label>
-                            <InputNumber id="tipo" class="form-control" @bind-Value="pathToEdit.acessibilidadeId" />
+                            <InputSelect @bind-Value=pathToEdit.acessibilidadeId class="form-select">
+                                <option value="-1" selected disabled>Acessibility Type</option>
+                                @foreach (var type in Acessibilities)
+                                {
+                                    <option value="@type.id">@type.tipo</option>
+                                }
+                            </InputSelect>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -330,6 +348,20 @@
 </div>
 
 @code {
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
     private List<Caminho> Caminhos = new List<Caminho>();
     private List<Accessibility> Acessibilities = new List<Accessibility>();
     private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();
@@ -351,11 +383,11 @@
     // Get the filtered people based on the search query
     private IEnumerable<Caminho> FilteredPeople =>
     Caminhos.Where(p =>
-        GetInfraDescricao(p.origemId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-        GetInfraDescricao(p.destinoId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-        p.distancia.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-        p.acessivel.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-        p.tipoAcessibilidade.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    GetInfraDescricao(p.origemId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+    GetInfraDescricao(p.destinoId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+    p.distancia.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+    (p.acessivel ? "available" : "unavailable").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+    p.tipoAcessibilidade.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
     private CaminhoPost newPath = new();
     private string message;
     private CancellationTokenSource? cts;
@@ -381,7 +413,7 @@
     }
     public async Task HandleValidSubmit()
     {
-        if(newPath.origemId!=-1 && newPath.destinoId!=-1)
+        if(newPath.origemId!=-1 && newPath.destinoId!=-1 && newPath.acessibilidadeId!=-1)
         {
             var success = await PathService.CreatePathAsync(newPath);
             if (success)
@@ -397,7 +429,7 @@
         }
         else
         {
-            startTimer("Selecione origem e destino validos.", "red");
+            startTimer("Selecione origem, destino e tipo de acessibilidade validos.", "red");
         }
     }
     public async Task HandleDeleteSubmit(int id)

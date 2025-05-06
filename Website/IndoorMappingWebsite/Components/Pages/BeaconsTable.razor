@@ -3,6 +3,9 @@
 @using IndoorMappingWebsite.Services
 @attribute [StreamRendering]
 @inject IBeaconService BeaconService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>beaconstable</PageTitle>
 
@@ -167,7 +170,9 @@
         <li class="navbarItem"><a class="active" href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+    <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+
     </div>
 </ul>
 
@@ -267,6 +272,20 @@
 
 
 @code {
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
     private List<Beacon> beacons = new List<Beacon>();
 
     protected override async Task OnInitializedAsync()

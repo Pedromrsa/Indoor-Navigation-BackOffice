@@ -1,27 +1,25 @@
-﻿using IndoorMappingWebsite.Components.Pages;
-using IndoorMappingWebsite.Models;
+﻿using IndoorMappingWebsite.Models;
 
 namespace IndoorMappingWebsite.Services
 {
-    public interface IInfraestruturaService
+    public interface ITipoInfraestruturaService
     {
-        Task<List<Infraestrutura>> GetInfraestruturasAsync();
-        Task<bool> CreateInfraestruturaAsync(InfraestruturaSend path);
-        Task<Infraestrutura> GetInfraestruturaByIdAsync(int id);
+        Task<List<TipoInfraestrutura>> GetInfraestruturasAsync();
+        Task<bool> CreateInfraestruturaAsync(TipoInfraestruturaSend path);
+        Task<TipoInfraestrutura> GetInfraestruturaByIdAsync(int id);
         Task<bool> DeleteInfraestruturaById(int id);
-        Task<bool> UpdateInfraestrutura(InfraestruturaEdit Path);
+        Task<bool> UpdateInfraestrutura(TipoInfraestrutura Path);
     }
-    public class InfraestruturaService : IInfraestruturaService
+    public class TipoInfraestruturaService : ITipoInfraestruturaService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "/api/Infraestrutura";
-        private readonly string _baseUrlGetall= "/api/Infraestrutura/GetAll";
+        private readonly string _baseUrl = "/api/TipoInfraestrutura";
 
-        public InfraestruturaService(HttpClient httpClient)
+        public TipoInfraestruturaService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
-        public async Task<bool> CreateInfraestruturaAsync(InfraestruturaSend path)
+        public async Task<bool> CreateInfraestruturaAsync(TipoInfraestruturaSend path)
         {
             try
             {
@@ -35,12 +33,12 @@ namespace IndoorMappingWebsite.Services
             }
         }
 
-        public async Task<Infraestrutura> GetInfraestruturaByIdAsync(int id)
+        public async Task<TipoInfraestrutura> GetInfraestruturaByIdAsync(int id)
         {
-           
+
             try
             {
-                return await _httpClient.GetFromJsonAsync<Infraestrutura>($"{_baseUrl}{id}");
+                return await _httpClient.GetFromJsonAsync<TipoInfraestrutura>($"{_baseUrl}{id}");
             }
             catch (Exception ex)
             {
@@ -49,11 +47,11 @@ namespace IndoorMappingWebsite.Services
             }
         }
 
-        public async Task<List<Infraestrutura>> GetInfraestruturasAsync()
+        public async Task<List<TipoInfraestrutura>> GetInfraestruturasAsync()
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Infraestrutura>>(_baseUrlGetall);
+                return await _httpClient.GetFromJsonAsync<List<TipoInfraestrutura>>(_baseUrl);
             }
             catch (Exception ex)
             {
@@ -80,7 +78,7 @@ namespace IndoorMappingWebsite.Services
             }
         }
 
-        public async Task<bool> UpdateInfraestrutura(InfraestruturaEdit Path)
+        public async Task<bool> UpdateInfraestrutura(TipoInfraestrutura Path)
         {
             try
             {

@@ -1,6 +1,8 @@
 ﻿@page "/home"
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
 <PageTitle>Home</PageTitle>
 
 <style>
@@ -66,7 +68,7 @@
         flex-direction: column;
         width: 80%;
         max-width: 500px;
-        gap: clamp(1rem, 4vw, 2rem);
+        gap: clamp(0.5rem, 4vw, 0.5rem);
     }
 
         .vertical-buttons button {
@@ -95,11 +97,26 @@
         <button class="btn btn-secondary" @onclick="@(() => Navigate("beaconstable"))">Beacons</button>
         <button class="btn btn-secondary" @onclick="@(() => Navigate("pathsmap"))">Paths</button>
         <button class="btn btn-secondary" @onclick="@(() => Navigate("logstable"))">Logs</button>
-        <button class="btn btn-secondary" @onclick="@(() => Navigate("accessibilitytable"))">Accessibility</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("infrastructuretable"))">Infrastructure</button>
+        <button class="btn btn-secondary" @onclick="@(() => Navigate("feedbacktable"))">Feedback</button>
     </div>
 </div>
 
 @code {
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
     private void Navigate(string page)
     {
         NavigationManager.NavigateTo(page);  // A URL para a qual você quer navegar

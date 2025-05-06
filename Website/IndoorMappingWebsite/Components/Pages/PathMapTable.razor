@@ -4,6 +4,9 @@
 @inject IPathMapService PathMapService
 @inject IInfraestruturaService InfraestruturaService
 @attribute [StreamRendering]
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>pathstable</PageTitle>
 
@@ -170,7 +173,9 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a class="active" href="pathstable">Paths</a></li
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>     
+        <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+            <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+
     </div>
 </ul>
 
@@ -334,6 +339,20 @@
 </div>
 
 @code {
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
     private List<Caminho2> Caminhos = new List<Caminho2>();
 
     private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();

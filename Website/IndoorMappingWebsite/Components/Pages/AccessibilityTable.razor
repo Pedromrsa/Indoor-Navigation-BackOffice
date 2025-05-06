@@ -1,7 +1,13 @@
-﻿@page "/accessibilitytable"
+﻿@page "/infrastructuretable"
+@using IndoorMappingWebsite.Models
+@using IndoorMappingWebsite.Services
 @attribute [StreamRendering]
+@inject IInfraestruturaService infraestruturaService
+@inject ITipoInfraestruturaService tipoInfraestruturaService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
 
-<PageTitle>accessibilitytable</PageTitle>
+<PageTitle>infrastructuretable</PageTitle>
 
 <style>
     body {
@@ -133,8 +139,28 @@
     input {
         text-align: center;
     }
-</style>
 
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+</style>
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
@@ -144,12 +170,13 @@
     <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
     <li class="navbarItem"><a href="pathsmap">Paths</a></li>
     <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a class="active" href="accessibilitytable">Accessibility</a></li>
+    <li class="navbarItem"><a class="active" href="infrastructuretable">Infrastructure</a></li>
+    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
     </div>
 </ul>
 
 <div class="center-container">
-    <h1>Accessibility Table</h1>
+    <h1>InfraStructure Table</h1>
 
     <!-- Search Input -->
     <div class="search-bar">
@@ -164,6 +191,9 @@
                     <th>Description</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
+                    <th>Floor</th>
+                    <th>Accessible</th>
+                    <th>Type</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -172,43 +202,132 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@person.Description</td>
-                        <td>@(person.Latitude)º</td>
-                        <td>@(person.Longitude)º</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td>@person.descricao</td>
+                        <td>@(person.latitude)º</td>
+                        <td>@(person.longitude)º</td>
+                        <td>@person.piso</td>
+                        @if (person.acessivel)
+                        {
+                            <td>
+                                Available
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Unavailable
+                            </td>
+                        }
+                        <td>@person.tipoInfraestrutura</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => ShowEditModal(person)">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="() => HandleDeleteSubmit(person.id)">Delete</button></td>
                     </tr>
                 }
                 <tr class="addbtn">
-                    <td><input class="form-control" placeholder="Insira a Descrição..." /></td>
-                    <td><input class="form-control" placeholder="Insira a Latitude..." /></td>
-                    <td><input class="form-control" placeholder="Insira a Longitude..." /></td>
+                    <td><InputText @bind-Value=newInfra.descricao class="form-control" placeholder="Insira a Descrição..." /></td>
+                    <td><InputNumber @bind-Value=newInfra.latitude class="form-control" placeholder="Insira a Latitude..." /></td>
+                    <td><InputNumber @bind-Value=newInfra.longitude class ="form-control" placeholder="Insira a Longitude..." /></td>
+                    <td><InputNumber @bind-Value=newInfra.piso class="form-control" placeholder="Insira o Piso..." /></td>
+                    <td>
+                        <InputSelect @bind-Value=newInfra.acessivel class="form-select">
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </InputSelect>
+                    </td>
+                    <td>
+                        <InputSelect @bind-Value=newInfra.tipoInfraestruturaId class="form-select">
+                            <option value="-1" selected disabled>Infrastructure Type</option>
+                            @foreach (var type in tipoInfraestruturas)
+                            {
+                                <option value="@type.id">@type.tipo</option>
+                            }
+                        </InputSelect>
+                    </td>
                     <td></td>
-                    <td><button type="button" class="btn btn-success">Add</button></td>
+                    <td><button type="button" class="btn btn-success" @onclick="HandleValidSubmit">Add</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="infraToEdit" OnValidSubmit="HandleEditSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label">Description</label>
+                            <InputText id="descricao" class="form-control" @bind-Value="infraToEdit.descricao" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <InputNumber id="latitude" class="form-control" @bind-Value="infraToEdit.latitude" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <InputNumber id="longitude" class="form-control" @bind-Value="infraToEdit.longitude" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="piso" class="form-label">Floor</label>
+                            <InputNumber id="piso" class="form-control" @bind-Value="infraToEdit.piso" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="acessivel" class="form-label">Accessible</label>
+                            <InputSelect @bind-Value=infraToEdit.acessivel class="form-select">
+                                <option value="true">Available</option>
+                                <option value="false">Unavailable</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobilidade" class="form-label">Mobility</label>
+                            <InputSelect @bind-Value=infraToEdit.tipoInfraestruturaId class="form-select">
+                                <option value="-1" selected disabled>Infrastructure Type</option>
+                                @foreach (var type in tipoInfraestruturas)
+                                {
+                                    <option value="@type.id">@type.tipo</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
-    // Sample data for the table
-    private List<Route> routes = new List<Route>
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        new Route { Description = "Elevador Avariado", Latitude = 3048.7, Longitude = 2000 },
-        new Route { Description = "Rampa Escorregadia", Latitude = 3052.1, Longitude = 2100.9 },
-        new Route { Description = "Obstrução no Corredor Principal", Latitude = 3028, Longitude = 2200.7 },
-        new Route { Description = "Sinalização com Falha", Latitude = 3095.7, Longitude = 2200.7 },
-        new Route { Description = "Porta Automática com Defeito", Latitude = 3038.7, Longitude = 2400.3 },
-        new Route { Description = "Área em Obras", Latitude = 3100.2, Longitude = 2450.1 },
-        new Route { Description = "Elevador Fora de Serviço", Latitude = 3070.4, Longitude = 2300.6 },
-        new Route { Description = "Escadas Bloqueadas", Latitude = 3065.9, Longitude = 2150.3 },
-        new Route { Description = "Piso Molhado na Entrada B", Latitude = 3010.8, Longitude = 1985.5 },
-        new Route { Description = "Iluminação Insuficiente no 2º Piso", Latitude = 3085.3, Longitude = 2500.8 }
-    };
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+    private List<TipoInfraestrutura> tipoInfraestruturas = new List<TipoInfraestrutura>();
+    private List<Infraestrutura> infraestruturas = new List<Infraestrutura>();
 
-
-
+    protected override async Task OnInitializedAsync()
+    {
+        tipoInfraestruturas = await tipoInfraestruturaService.GetInfraestruturasAsync();
+        infraestruturas = await infraestruturaService.GetInfraestruturasAsync();
+    }
     // The search query from the input
     private string searchQuery = string.Empty;
 
@@ -218,16 +337,103 @@
     }
 
     // Get the filtered people based on the search query
-    private IEnumerable<Route> FilteredPeople =>
-        routes.Where(p => p.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Latitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.Longitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    private IEnumerable<Infraestrutura> FilteredPeople =>
+        infraestruturas.Where(p => p.descricao.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.latitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.longitude.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.piso.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) || 
+                          p.tipoInfraestrutura.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          (p.acessivel ? "available" : "unavailable").Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
     // Person model for the table data
-    public class Route
+    private InfraestruturaSend newInfra = new();
+    private string message;
+    private CancellationTokenSource? cts;
+    private string messageColor = "green";
+    private async Task startTimer(string msg, string Color)
     {
-        public string Description { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+    }
+    public async Task HandleValidSubmit()
+    {
+        var success = await infraestruturaService.CreateInfraestruturaAsync(newInfra);
+        if (success)
+        {
+            startTimer("Infraestrutura criada com sucesso!", "green");
+            newInfra = new(); // limpa o form
+            infraestruturas = await infraestruturaService.GetInfraestruturasAsync();
+        }
+        else
+        {
+            startTimer("Erro ao criar infraestrutura.", "red");
+        }
+    }
+    public async Task HandleDeleteSubmit(int id)
+    {
+        var success = await infraestruturaService.DeleteInfraestruturaById(id);
+        if (success)
+        {
+            startTimer("Infraestrutura eliminada com sucesso!", "green");
+            infraestruturas = await infraestruturaService.GetInfraestruturasAsync();
+        }
+        else
+        {
+            startTimer("Erro ao eliminar infraestrutura.", "red");
+        }
+    }
+    private bool showModal = false;
+    private InfraestruturaEdit infraToEdit = new InfraestruturaEdit();
+    private void ShowEditModal(Infraestrutura infra)
+    {
+        int infratypeid = tipoInfraestruturas.FirstOrDefault(p => p.tipo == infra.tipoInfraestrutura).id;
+        if(infratypeid>0)
+        {
+            infraToEdit = new InfraestruturaEdit
+                {
+                    id = infra.id,
+                    descricao = infra.descricao,
+                    latitude = infra.latitude,
+                    longitude = infra.longitude,
+                    piso = infra.piso,
+                    acessivel = infra.acessivel,
+                    tipoInfraestruturaId = infratypeid
+                };
+            showModal = true; // Exibe o modal
+        }
+    }
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
+    private async Task HandleEditSubmit()
+    {
+        // Aqui você pode chamar seu serviço para atualizar o beacon no servidor
+        var sucesso = await infraestruturaService.UpdateInfraestrutura(infraToEdit);
+
+        if (sucesso)
+        {
+            infraestruturas = await infraestruturaService.GetInfraestruturasAsync();
+            CloseModal(); // Fecha o modal após a edição
+            startTimer("Infraestrutura editada com sucesso!", "green");
+        }
+        else
+        {
+            startTimer("Erro ao editar infraestrutura.", "red");
+        }
     }
 }
 

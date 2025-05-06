@@ -62,3 +62,6 @@ C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingW
 C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\obj\Debug\net8.0\IndoorMappingWebsite.pdb
 C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\obj\Debug\net8.0\IndoorMappingWebsite.genruntimeconfig.cache
 C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\obj\Debug\net8.0\ref\IndoorMappingWebsite.dll
+C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\bin\Debug\net8.0\Blazored.LocalStorage.dll
+C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\obj\Debug\net8.0\IndoorMappingWebsite.csproj.AssemblyReference.cache
+C:\Users\pedro\Desktop\TASSI\Indoor-Navigation-BackOffice\Website\IndoorMappingWebsite\obj\Debug\net8.0\IndoorMa.E13586FB.Up2Date

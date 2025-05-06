@@ -4,6 +4,8 @@
 @using IndoorMappingWebsite.Models
 @using IndoorMappingWebsite.Services
 @inject IUserService UserService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
 
 <PageTitle>Users Table</PageTitle>
 
@@ -165,7 +167,9 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+    <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+
     </div>
 </ul>
 
@@ -279,6 +283,20 @@
 </div>
 
 @code {
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
     public class UserGet
     {
         public int usuarioId { get; set; }

@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using IndoorMappingWebsite.Components;
 using IndoorMappingWebsite.Services;
 using Microsoft.AspNetCore.StaticFiles;
@@ -11,7 +12,7 @@ builder.Services.AddRazorComponents()
     {
         options.DetailedErrors = true;  // Habilita erros detalhados
     });
-
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IBeaconService, BeaconService>();
@@ -19,6 +20,8 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IPathMapService, PathMapService>();
 builder.Services.AddScoped<IAccessibilityService, AccessibilityService>();
 builder.Services.AddScoped<IInfraestruturaService, InfraestruturaService>();
+builder.Services.AddScoped<ITipoInfraestruturaService, TipoInfraestruturaService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<HttpClient>(sp =>
     new HttpClient { BaseAddress = new Uri("https://isepindoornavigationapi-vgq7.onrender.com") });

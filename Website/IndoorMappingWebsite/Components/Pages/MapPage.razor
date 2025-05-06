@@ -11,6 +11,8 @@
 
 @inject IAccessibilityService AccessibilityService
 @inject IInfraestruturaService InfraestruturaService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
 
 <style>
     body {
@@ -71,7 +73,9 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-        <li class="navbarItem"><a href="accessibilitytable">Accessibility</a></li>
+    <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+
     </div>
 </ul>
 
@@ -177,6 +181,8 @@
 </div>
 
 @code {
+    private bool _hasNavigated = false;
+
     DotNetObjectReference<MapPage>? dotNetRef;
 
     private List<Beacon> beacons = new List<Beacon>();
@@ -193,6 +199,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/");
+            }
+        }
         if (firstRender)
         {
             await InitializeMap();

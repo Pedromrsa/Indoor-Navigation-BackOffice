@@ -4,6 +4,9 @@
 
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
+@inject IUserService userService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
 
 <style>
     .login-container {
@@ -77,12 +80,32 @@
     }
 
     .formText{
-        color: black;
+    color: black;
+    }
+
+    .canto-inferior-direito {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: @messageColor;
+    border-radius: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
     }
 </style>
 
 <PageTitle>Login</PageTitle>
-
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
+}
 <div class="login-container">
     <div class="login-box">
         <h3>Login</h3>
@@ -116,17 +139,69 @@
 
 
 @code {
+    private string message;
+    private string messageColor = "green";
+    private CancellationTokenSource? cts;
+    private async Task startTimer(string msg, string Color)
+    {
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+    }
+    private List<UserTable.UserGet> Users = new List<UserTable.UserGet>();
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userService.GetUsersAsync();
+    }
     private LoginModel loginModel = new LoginModel();
+
+    private bool _hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/home");
+            }
+        }
+    }
 
     private async Task HandleLogin()
     {
-        NavigationManager.NavigateTo("/home");
-        /*
-        if(LoginService.LoginAsync(loginModel.Email,loginModel.Password)!= null)
+        var token = await LoginService.LoginAsync(loginModel.Email, loginModel.Password);
+        if (!string.IsNullOrEmpty(token))
         {
-            NavigationManager.NavigateTo("/home");
-        }*/
-        
+            if (Users.FirstOrDefault(p => p.email == loginModel.Email).tipoUsuario == "Admin")
+            {
+                await localStorage.SetItemAsync("authToken", token);
+                NavigationManager.NavigateTo("/home");
+            }
+            else
+            {
+                startTimer("Conta sem permissões.", "red");
+            }
+        }
+        else
+        {
+            startTimer("Conta não encontrada.","red");
+        }
     }
 
 

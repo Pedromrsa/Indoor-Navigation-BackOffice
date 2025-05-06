@@ -28,7 +28,7 @@ namespace IndoorMappingWebsite.Services
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-                return result?["Token"];
+                return result?["token"];
             }
 
             return null;
