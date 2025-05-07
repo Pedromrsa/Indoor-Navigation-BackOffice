@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IndoorMappingWebsite")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5e3f8977b4b0901a77ecc661f7c6345aabbe373")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a762e4e323c6871bd28aebf92e6904b40622f8f5")]
 [assembly: System.Reflection.AssemblyProductAttribute("IndoorMappingWebsite")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IndoorMappingWebsite")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

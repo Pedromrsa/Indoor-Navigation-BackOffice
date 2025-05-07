@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:components\\pages\\feedbacktable.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|c:\\users\\pedro\\desktop\\tassi\\indoor-navigation-backoffice\\website\\indoormappingwebsite\\models\\tipoinfraestrutura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:models\\tipoinfraestrutura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|c:\\users\\pedro\\desktop\\tassi\\indoor-navigation-backoffice\\website\\indoormappingwebsite\\services\\feedbackservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:services\\feedbackservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -71,10 +75,6 @@
       "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:services\\tipoinfraestruturaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|c:\\users\\pedro\\desktop\\tassi\\indoor-navigation-backoffice\\website\\indoormappingwebsite\\models\\tipoinfraestrutura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:models\\tipoinfraestrutura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|c:\\users\\pedro\\desktop\\tassi\\indoor-navigation-backoffice\\website\\indoormappingwebsite\\services\\accessibilityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0670ADBF-00F0-4EB9-8974-1D04F8CBA9D6}|IndoorMappingWebsite.csproj|solutionrelative:services\\accessibilityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -122,15 +122,15 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PathMapTable.razor",
-              "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\PathMapTable.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\PathMapTable.razor",
-              "ToolTip": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\PathMapTable.razor",
-              "RelativeToolTip": "Components\\Pages\\PathMapTable.razor",
-              "ViewState": "AgIAAEABAAAAAAAAAAAiwFkBAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:12:48.417Z",
+              "DocumentIndex": 1,
+              "Title": "TipoInfraestrutura.cs",
+              "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Models\\TipoInfraestrutura.cs",
+              "RelativeDocumentMoniker": "Models\\TipoInfraestrutura.cs",
+              "ToolTip": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Models\\TipoInfraestrutura.cs",
+              "RelativeToolTip": "Models\\TipoInfraestrutura.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-06T03:01:01.855Z",
               "EditorCaption": ""
             },
             {
@@ -141,14 +141,14 @@
               "RelativeDocumentMoniker": "Components\\Pages\\FeedbackTable.razor",
               "ToolTip": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\FeedbackTable.razor",
               "RelativeToolTip": "Components\\Pages\\FeedbackTable.razor",
-              "ViewState": "AgIAAMMAAAAAAAAAAAAiwNwAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAL0AAAAAAAAAAAAuwNwAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-05-06T03:18:05.112Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "AccessibilityTable.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\AccessibilityTable.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\AccessibilityTable.razor",
@@ -156,12 +156,11 @@
               "RelativeToolTip": "Components\\Pages\\AccessibilityTable.razor",
               "ViewState": "AgIAAC8BAAAAAAAAAAAiwDgBAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-05T16:45:48.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T16:45:48.144Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "FeedbackService.cs",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Services\\FeedbackService.cs",
               "RelativeDocumentMoniker": "Services\\FeedbackService.cs",
@@ -169,12 +168,23 @@
               "RelativeToolTip": "Services\\FeedbackService.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAQwBUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T03:30:00.212Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:30:00.212Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
+              "Title": "PathMapTable.razor",
+              "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\PathMapTable.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\PathMapTable.razor",
+              "ToolTip": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\PathMapTable.razor",
+              "RelativeToolTip": "Components\\Pages\\PathMapTable.razor",
+              "ViewState": "AgIAAEABAAAAAAAAAAAiwFkBAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-06T03:12:48.417Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "LogsTable.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\LogsTable.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\LogsTable.razor",
@@ -182,12 +192,11 @@
               "RelativeToolTip": "Components\\Pages\\LogsTable.razor",
               "ViewState": "AgIAAM4AAAAAAAAAAAAiwOIAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-05T02:40:06.433Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:40:06.433Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Home.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Home.razor",
@@ -195,12 +204,11 @@
               "RelativeToolTip": "Components\\Pages\\Home.razor",
               "ViewState": "AgIAAFAAAAAAAAAAAAAwwG0AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:13:38.192Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:13:38.192Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "LoginPage.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\LoginPage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\LoginPage.razor",
@@ -208,12 +216,11 @@
               "RelativeToolTip": "Components\\Pages\\LoginPage.razor",
               "ViewState": "AgIAAJgAAAAAAAAAAAAiwK4AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:44:44.357Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:44:44.357Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "MapPage.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\MapPage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\MapPage.razor",
@@ -221,12 +228,11 @@
               "RelativeToolTip": "Components\\Pages\\MapPage.razor",
               "ViewState": "AgIAALoAAAAAAAAAAAAAAMkAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:12:38.857Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:12:38.857Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "LoginService.cs",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Services\\LoginService.cs",
               "RelativeDocumentMoniker": "Services\\LoginService.cs",
@@ -234,12 +240,11 @@
               "RelativeToolTip": "Services\\LoginService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAqwCEAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T03:51:37.621Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:51:37.621Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -247,12 +252,11 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAAABMAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T03:02:04.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T03:02:04.484Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "TipoInfraestruturaService.cs",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Services\\TipoInfraestruturaService.cs",
               "RelativeDocumentMoniker": "Services\\TipoInfraestruturaService.cs",
@@ -260,21 +264,7 @@
               "RelativeToolTip": "Services\\TipoInfraestruturaService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T03:00:35.494Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "TipoInfraestrutura.cs",
-              "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Models\\TipoInfraestrutura.cs",
-              "RelativeDocumentMoniker": "Models\\TipoInfraestrutura.cs",
-              "ToolTip": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Models\\TipoInfraestrutura.cs",
-              "RelativeToolTip": "Models\\TipoInfraestrutura.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T03:01:01.855Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:00:35.494Z"
             },
             {
               "$type": "Document",
@@ -286,8 +276,7 @@
               "RelativeToolTip": "Services\\AccessibilityService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T03:03:10.278Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:03:10.278Z"
             },
             {
               "$type": "Document",
@@ -299,8 +288,7 @@
               "RelativeToolTip": "Services\\InfraestruturaService.cs",
               "ViewState": "AgIAAEoAAAAAAAAAAAAswGMAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T21:27:24.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T21:27:24.045Z"
             },
             {
               "$type": "Document",
@@ -312,8 +300,7 @@
               "RelativeToolTip": "Services\\BeaconService.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAzwGkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T02:35:33.738Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:35:33.738Z"
             },
             {
               "$type": "Document",
@@ -325,8 +312,7 @@
               "RelativeToolTip": "Models\\Infraestrutura.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T16:56:14.74Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T16:56:14.74Z"
             },
             {
               "$type": "Document",
@@ -338,8 +324,7 @@
               "RelativeToolTip": "Models\\User.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T02:32:19.847Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:32:19.847Z"
             },
             {
               "$type": "Document",
@@ -351,8 +336,7 @@
               "RelativeToolTip": "Models\\Logs.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T02:32:44.722Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:32:44.722Z"
             },
             {
               "$type": "Document",
@@ -364,8 +348,7 @@
               "RelativeToolTip": "Services\\LogService.cs",
               "ViewState": "AgIAADIAAAAAAAAAAAAAwFMAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T02:32:14.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:32:14.842Z"
             },
             {
               "$type": "Document",
@@ -377,8 +360,7 @@
               "RelativeToolTip": "Models\\UserLoc.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T02:31:52.434Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:31:52.434Z"
             }
           ]
         },
@@ -388,7 +370,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "Error.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\Error.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Error.razor",
@@ -396,12 +378,11 @@
               "RelativeToolTip": "Components\\Pages\\Error.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:44:40.732Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:44:40.732Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Counter.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\Counter.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Counter.razor",
@@ -409,12 +390,11 @@
               "RelativeToolTip": "Components\\Pages\\Counter.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:44:39.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:44:39.307Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "PathTable.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\PathTable.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\PathTable.razor",
@@ -422,12 +402,11 @@
               "RelativeToolTip": "Components\\Pages\\PathTable.razor",
               "ViewState": "AgIAAE8BAAAAAAAAAAAiwGIBAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-05T17:02:59.984Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T17:02:59.984Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "UserTable.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\UserTable.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\UserTable.razor",
@@ -435,12 +414,11 @@
               "RelativeToolTip": "Components\\Pages\\UserTable.razor",
               "ViewState": "AgIAABYBAAAAAAAAAAAiwCEBAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-05T02:52:11.99Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T02:52:11.99Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "BeaconsTable.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\BeaconsTable.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\BeaconsTable.razor",
@@ -453,7 +431,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "Weather.razor",
               "DocumentMoniker": "C:\\Users\\pedro\\Desktop\\TASSI\\Indoor-Navigation-BackOffice\\Website\\IndoorMappingWebsite\\Components\\Pages\\Weather.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Weather.razor",
@@ -461,8 +439,7 @@
               "RelativeToolTip": "Components\\Pages\\Weather.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-06T03:45:13.638Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T03:45:13.638Z"
             },
             {
               "$type": "Document",
@@ -474,8 +451,7 @@
               "RelativeToolTip": "Models\\Caminho.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T17:12:49.085Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T17:12:49.085Z"
             }
           ]
         }

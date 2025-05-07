@@ -42,7 +42,14 @@
             transition: background-color 0.3s ease;
         }
 
+            .navbarItem a:not([href]):not([class]),
+            .navbarItem a:not([href]):not([class]):hover {
+                color: white;
+                text-decoration: none;
+            }
+
             .navbarItem a:hover:not(.active) {
+                cursor: pointer;
                 background-color: #540000;
             }
 
@@ -87,6 +94,9 @@
 
 <ul class="navbarList">
     <li class="logo"><a href="">IndoorMap</a></li>
+    <div style="display: flex;">
+        <li class="navbarItem"><a @onclick="@(() => Logout())">Log Out</a></li>
+    </div>
 </ul>
 
 <div class="center-container">
@@ -120,5 +130,10 @@
     private void Navigate(string page)
     {
         NavigationManager.NavigateTo(page);  // A URL para a qual você quer navegar
+    }
+    private async void Logout()
+    {
+        await localStorage.ClearAsync(); // Limpa todos os itens do localStorage
+        NavigationManager.NavigateTo("/"); // Redireciona para a página de login ou inicial
     }
 }

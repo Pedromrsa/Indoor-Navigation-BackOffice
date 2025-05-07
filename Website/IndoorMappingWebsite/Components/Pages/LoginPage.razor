@@ -191,6 +191,7 @@
             if (Users.FirstOrDefault(p => p.email == loginModel.Email).tipoUsuario == "Admin")
             {
                 await localStorage.SetItemAsync("authToken", token);
+                await localStorage.SetItemAsync("email", loginModel.Email);
                 NavigationManager.NavigateTo("/home");
             }
             else

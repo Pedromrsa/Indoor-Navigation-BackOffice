@@ -150,7 +150,23 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         z-index: 9999;
     }
+
+    .modal-backdrop-custom {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        opacity: 0.5;
+        z-index: 10; /* um pouco abaixo do modal */
+    }
+
 </style>
+@if (showModal)
+{
+    <div class="modal-backdrop-custom"></div>
+}
 @if(message!="" && message!=null)
 {
     <div class="canto-inferior-direito">
@@ -167,8 +183,8 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
-    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+        <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+        <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
 
     </div>
 </ul>
@@ -381,6 +397,12 @@
         {
             startTimer("Utilizador eliminado com sucesso!", "green");
             Users = await UserService.GetUsersAsync();
+            var email = await localStorage.GetItemAsync<string>("email");
+            if(Users.FirstOrDefault(p => p.email == email) == null)
+            {
+                await localStorage.ClearAsync();
+                NavigationManager.NavigateTo("/");
+            }
         }
         else
         {

@@ -139,7 +139,27 @@
         text-align: center;
     }
 
+    textarea {
+        height: 400px; /* ou qualquer valor que quiser */
+    }
+
+    .modal-backdrop-custom {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        opacity: 0.5;
+        z-index: 10; /* um pouco abaixo do modal */
+    }
+
+
 </style>
+@if (showModal)
+{
+    <div class="modal-backdrop-custom"></div>
+}
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
     <div style="display: flex;">
@@ -159,7 +179,7 @@
 
     <!-- Search Input -->
     <div class="search-bar">
-        <input type="text" @oninput="OnSearchInput" placeholder="Search by description, latitude, or longitude..." class="form-control" />
+        <input type="text" @oninput="OnSearchInput" placeholder="Search by user, path, evaluation, date or comment keyword..." class="form-control" />
     </div>
 
     <!-- Table with Filtered Data inside a Scrollable Container -->
@@ -170,6 +190,8 @@
                     <th>User</th>
                     <th>Path</th>
                     <th>Evaluation</th>
+                    <th>Date</th>
+                    <th>Hour</th>
                     <th>Comment</th>
                 </tr>
             </thead>
@@ -185,21 +207,36 @@
                                     @user.email
                                 }
                             }
-                             
+
                         </td>
                         <td>@person.caminhoId</td>
                         <td>@(person.avaliacao) ★</td>
-                        <td>@person.comentario</td>
+                        <td>@person.dataHora.ToString("dd/MM/yy")</td>
+                        <td>@person.dataHora.ToString("HH:mm")</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="() => changeComment(person.comentario)">See</button></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+    <div class="modal" tabindex="-1" style="display:@(showModal ? "block" : "none")" aria-hidden="@(showModal ? "false" : "true")">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Comment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea disabled class="form-control">@commenttoSee</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
     private bool _hasNavigated = false;
-
+    private bool showModal = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !_hasNavigated)
@@ -218,7 +255,9 @@
     protected override async Task OnInitializedAsync()
     {
         users = await userService.GetUsersAsync();
-        //feedbacks = await feedbackService.GetFeedbacksAsync();
+        feedbacks = await feedbackService.GetFeedbacksAsync();
+        feedbacks = feedbacks.OrderByDescending(f => f.dataHora).ToList();
+
     }
     // The search query from the input
     private string searchQuery = string.Empty;
@@ -227,12 +266,23 @@
     {
         searchQuery = e.Value.ToString();
     }
-
+    private string commenttoSee;
+    private void changeComment(string comment)
+    {
+        commenttoSee = comment;
+        showModal = true;
+    }
+    private void CloseModal()
+    {
+        showModal = false; // Fecha o modal
+    }
     // Get the filtered people based on the search query
     private IEnumerable<Feedback> FilteredPeople =>
         feedbacks.Where(p => (users.FirstOrDefault(u => u.usuarioId == p.usuarioId)).email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                           p.caminhoId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                           p.avaliacao.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                          p.dataHora.ToString("dd/MM/yy").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        p.dataHora.ToString("HH:mm").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                           p.comentario.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 
 }
