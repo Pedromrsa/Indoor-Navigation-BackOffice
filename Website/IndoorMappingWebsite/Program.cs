@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
     });
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserLocService, UserLocService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IBeaconService, BeaconService>();
 builder.Services.AddScoped<IPathService, PathService>();

@@ -302,6 +302,7 @@ function initMap(dotNetRef) {
 
     console.log('Mapa inicializado com sucesso!');
     //loadPathsFromData(caminhosSalvos);
+    addOrUpdateUser("OI", -8.628847207886688, 41.1832584894469, "PERSON", "Beacon2");
 }
 
 
@@ -478,43 +479,6 @@ function addBeacon(longitude, latitude, level, name = "") {
     hideContextMenu();
 }
 
-function addOrUpdateUser(userId, longitude, latitude, name = "") {
-    if (longitude == null || latitude == null) return;
-
-    const userLocation = ol.proj.fromLonLat([longitude, latitude]);
-
-    const existingFeature = vectorSource.getFeatures().find(f => f.get("userId") === userId);
-
-    if (existingFeature) {
-        existingFeature.getGeometry().setCoordinates(userLocation);
-        return;
-    }
-
-    const userStyle = new ol.style.Style({
-        image: new ol.style.Icon({
-            src: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_red.png',
-            scale: 1,
-            anchor: [0.5, 1]
-        }),
-        text: new ol.style.Text({
-            text: name || userId,
-            offsetY: -25,
-            scale: 1.2,
-            fill: new ol.style.Fill({ color: '#000' }),
-            stroke: new ol.style.Stroke({ color: '#fff', width: 2 }),
-            textAlign: 'center'
-        })
-    });
-
-    const userFeature = new ol.Feature({
-        geometry: new ol.geom.Point(userLocation),
-        userId: userId,
-        name: name
-    });
-
-    userFeature.setStyle(userStyle);
-    vectorSource.addFeature(userFeature);
-}
 
 function loadPathsFromData(data) {
     data.forEach(function (path) {
@@ -563,3 +527,51 @@ const caminhosSalvos = [
     { id: 1, "nome": "123", "piso": "1", "listaCoordenadas": "[[-8.628587729472004, 41.18329453268572], [-8.628587925564599, 41.183281840748975], [-8.628589690397952, 41.18326176977425], [-8.628612241046373, 41.18324479798929], [-8.628649106454228, 41.18325660444884], [-8.628658714991381, 41.18324981573488]]" }
 ]
 
+
+function addOrUpdateUser(userId, longitude, latitude, name = "", beaconName) {
+    if (longitude == null || latitude == null) return;
+
+    const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+    const existingFeature = vectorSource.getFeatures().find(f => f.get("userId") === userId);
+
+    const beacon = vectorSource.getFeatures().find(f => f.get("name") === beaconName);
+    console.log(beacon)
+
+    if (existingFeature) {
+        existingFeature.getGeometry().setCoordinates(userLocation);
+        existingFeature.set("level", beacon.get("level") || "1");
+        return;
+    }
+    
+    const userStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+            src: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_red.png',
+            scale: 0.8,
+            anchor: [0.5, 1]
+        }),
+        text: new ol.style.Text({
+            text: name || userId,
+            offsetY: -30,
+            scale: 1.2,
+            fill: new ol.style.Fill({ color: '#000' }),
+            stroke: new ol.style.Stroke({ color: '#fff', width: 2 }),
+            textAlign: 'center'
+        })
+    });
+
+    const userFeature = new ol.Feature({
+        geometry: new ol.geom.Point(userLocation),
+        userId: userId,
+        name: name,
+        level: "1" || beacon.get("level") 
+
+    });
+
+    userFeature.set("originalStyle", userStyle);
+    
+
+    userFeature.setStyle(userStyle);
+    vectorSource.addFeature(userFeature);
+    updateFeatureVisibility();
+}

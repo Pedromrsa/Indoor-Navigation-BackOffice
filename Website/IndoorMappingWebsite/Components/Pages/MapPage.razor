@@ -3,10 +3,11 @@
 @using IndoorMappingWebsite.Models
 @using IndoorMappingWebsite.Services
 @using System.Text.Json
+@using System.Timers
 @inject IJSRuntime JSRuntime
 @inject IJSRuntime JS
 @inject IBeaconService BeaconService
-
+@inject IUserLocService UserLocService
 @inject IPathMapService PathMapService
 
 @inject IAccessibilityService AccessibilityService
@@ -73,8 +74,8 @@
         <li class="navbarItem"><a href="beaconstable">Beacons</a></li>
         <li class="navbarItem"><a href="pathsmap">Paths</a></li>
         <li class="navbarItem"><a href="logstable">Logs</a></li>
-    <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
-    <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
+        <li class="navbarItem"><a href="infrastructuretable">Infrastructure</a></li>
+        <li class="navbarItem"><a href="feedbacktable">Feedback</a></li>
 
     </div>
 </ul>
@@ -183,11 +184,15 @@
 @code {
     private bool _hasNavigated = false;
 
+    private Timer updateTimer;
+    private string currentTime;
+
     DotNetObjectReference<MapPage>? dotNetRef;
 
     private List<Beacon> beacons = new List<Beacon>();
     private List<Caminho2> Caminhos = new List<Caminho2>();
     private List<Infraestrutura> Infraestruturas = new List<Infraestrutura>();
+    private List<UserLoc> UserPositions = new List<UserLoc>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -195,6 +200,10 @@
         beacons = await BeaconService.GetBeaconsAsync();
         Infraestruturas = await InfraestruturaService.GetInfraestruturasAsync();
         Caminhos = await PathMapService.GetPathsAsync();
+        updateTimer = new Timer(10000);
+        //updateTimer.Elapsed += async (sender, args) => await UpdatePosition();
+        updateTimer.AutoReset = true;
+        updateTimer.Enabled = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -244,6 +253,12 @@
     {
         //string resultJson = JsonSerializer.Serialize(paths, new JsonSerializerOptions { WriteIndented = true });
         await JSRuntime.InvokeVoidAsync("loadPathsFromData", paths);
+    }
+
+    private async Task AddUserToMap(string userId, double longitude, double latitude, string name , string beaconName)
+    {
+        //string resultJson = JsonSerializer.Serialize(paths, new JsonSerializerOptions { WriteIndented = true });
+        await JSRuntime.InvokeVoidAsync("addOrUpdateUser", userId, longitude, latitude, name, beaconName);
     }
 
 
@@ -311,7 +326,7 @@
         Console.WriteLine(resultJson);
         if (sucesso)
         {
-            
+
         }
         ClosePathModal();
     }
@@ -320,6 +335,24 @@
         var infra = Infraestruturas.FirstOrDefault(i => i.id == id);
         return infra != null ? $"{infra.descricao} (Piso {infra.piso})" : "";
     }
-    
+
+    private async Task UpdatePosition()
+    {
+
+        UserPositions = UserLocService.GetUsersLastPosition(await UserLocService.GetUsersAsync());
+
+        UserPositions.ForEach(async (user) =>
+        {
+            Beacon ?beacon = beacons.FirstOrDefault(x => x.id == user.beaconId);
+            if (beacon != null)
+                await AddUserToMap(user.id.ToString(), user.longitude, user.latitude, "PERSON", beacon.nome);
+        });
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        updateTimer?.Dispose();
+    }
    
 }
