@@ -251,8 +251,9 @@
 
     private async Task LoadPathsFromData(List<Caminho2> paths)
     {
+        List<Caminho2Full> complete = Caminho2Full.mapCompleteInfo(paths, Infraestruturas);
         //string resultJson = JsonSerializer.Serialize(paths, new JsonSerializerOptions { WriteIndented = true });
-        await JSRuntime.InvokeVoidAsync("loadPathsFromData", paths);
+        await JSRuntime.InvokeVoidAsync("loadPathsFromData", complete);
     }
 
     private async Task AddUserToMap(string userId, double longitude, double latitude, string name , string beaconName)

@@ -311,6 +311,7 @@ function enableClick() {
         mapClickListener = function (event) {
             clickCoordinate = event.coordinate;
             coordinate = ol.proj.toLonLat(clickCoordinate);
+            console.log(coordinate);
 
             const pixel = map.getEventPixel(event.originalEvent);
             const mapElement = document.getElementById('map');
@@ -496,14 +497,17 @@ function loadPathsFromData(data) {
             level: path.piso.toString() 
         });
 
-        const color = colors[colorIndex % colors.length]; // evita overflow
+        //const color = colors[colorIndex % colors.length]; // evita overflow
+
+        let color = path.acessivel ? 'blue' : 'red'
+
         const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: 'blue',
+                color: color,
                 width: 2
             }),
             text: new ol.style.Text({
-                text: path.nome || "Sem nome",
+                text: path.origem + " -> " + path.destino, //path.origem + ' - ' + path.destino,
                 font: '18px Calibri,sans-serif',
                 fill: new ol.style.Fill({ color: '#000' }),
                 stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
