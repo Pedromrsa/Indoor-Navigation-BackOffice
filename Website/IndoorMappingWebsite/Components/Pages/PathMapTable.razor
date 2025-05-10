@@ -218,7 +218,7 @@
                 @foreach (var person in FilteredPeople)
                 {
                     <tr>
-                        <td>@(person.nome)</td>
+                        <td>@(string.IsNullOrWhiteSpace(person.nome) ? "PATH" : person.nome)</td>
                         <td>
                             @foreach (var local in Infraestruturas)
                             {
@@ -459,11 +459,12 @@
         pathToEdit = new Caminho2
             {
                 id=path.id,
-                nome = path.nome,
+                nome = path.nome ?? "PATH",
                 origemId = path.origemId,
                 destinoId = path.destinoId,
                 acessivel = path.acessivel,
                 piso = path.piso,
+                listaCoordenadas = path.listaCoordenadas
             };
         showModal = true; // Exibe o modal
     }
