@@ -1,12 +1,27 @@
 ﻿namespace IndoorMappingWebsite.Models
 {
-    public class TipoInfraestrutura
+    public class Feedback
     {
-        public int id { get; set; } = -1;
-        public string tipo { get; set; } = string.Empty;
+        public int id { get; set; }
+        public int usuarioId { get; set; } = -1;
+        public int caminhoId { get; set; } = -1;
+        public int avaliacao { get; set; } = -1;
+        public string comentario { get; set; } = string.Empty;
+        public DateTime dataHora { get; set; }
     }
-    public class TipoInfraestruturaSend
+    public class FeedbackUser
     {
-        public string tipo { get; set; } = string.Empty;
+        public int feedbackId { get; set; }
+        public int usuarioId { get; set; }
+        public int adminId { get; set; }
+        public string comentario { get; set; } = string.Empty;
+    }
+    public class FeedbackUserGet
+    {
+        public int id { get; set; }
+        public int feedbackId { get; set; }
+        public int usuarioId { get; set; }
+        public int adminId { get; set; }
+        public string comentario { get; set; } = string.Empty;
     }
 }

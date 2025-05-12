@@ -4,6 +4,8 @@
 @attribute [StreamRendering]
 @inject IFeedbackService feedbackService
 @inject IUserService userService
+@inject IPathService pathService
+@inject IInfraestruturaService infraestruturaService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
 <PageTitle>feedbacktable</PageTitle>
@@ -139,7 +141,7 @@
         text-align: center;
     }
 
-    textarea {
+    .messageFromUser {
         height: 400px; /* ou qualquer valor que quiser */
     }
 
@@ -154,11 +156,31 @@
         z-index: 10; /* um pouco abaixo do modal */
     }
 
+    .canto-inferior-direito {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: @messageColor;
+        border-radius: 16px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
 
 </style>
 @if (showModal)
 {
     <div class="modal-backdrop-custom"></div>
+}
+@if (message != "" && message != null)
+{
+    <div class="canto-inferior-direito">
+        @message
+    </div>
 }
 <ul class="navbarList">
     <li class="logo"><a href="home">IndoorMap</a></li>
@@ -209,11 +231,53 @@
                             }
 
                         </td>
-                        <td>@person.caminhoId</td>
+                        <td>
+                            @foreach (var caminho in caminhos)
+                            {
+                                ecaminho = false;
+                                if(caminho.id == person.caminhoId)
+                                {
+                                    @foreach (var estrutura in infraestruturas)
+                                    {
+                                        if (caminho.origemId == estrutura.id)
+                                        {
+                                            ecaminho = true;
+                                            @("Origin: " + estrutura.descricao + " (Piso" + estrutura.piso + ")\n")
+                                            break;
+                                        }
+                                    }
+                                    @foreach (var estrutura in infraestruturas)
+                                    {
+                                        if (caminho.destinoId == estrutura.id)
+                                        {
+                                            ecaminho = true;
+                                            @("Destiny: " + estrutura.descricao + " (Piso " + estrutura.piso + ")")
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                if(ecaminho)
+                                {
+                                    break;
+                                }
+                            }
+                            @if(!ecaminho)
+                            {
+                                @("App")
+                            }
+                        </td>
                         <td>@(person.avaliacao) ★</td>
                         <td>@person.dataHora.ToString("dd/MM/yy")</td>
                         <td>@person.dataHora.ToString("HH:mm")</td>
-                        <td><button type="button" class="btn btn-primary" @onclick="() => changeComment(person.comentario)">See</button></td>
+                        @if (feedbacksforUser.FirstOrDefault(p => p.feedbackId == person.id) != null)
+                        {
+                            <td><button type="button" class="btn btn-primary" @onclick="() => changeComment(person)">See</button></td>
+                        }
+                        else
+                        {
+                            <td><button type="button" class="btn btn-danger" @onclick="() => changeComment(person)">See !</button></td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -227,9 +291,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
                 </div>
                 <div class="modal-body">
-                    <textarea disabled class="form-control">@commenttoSee</textarea>
+                    <textarea disabled class="form-control messageFromUser">@commenttoSee</textarea>
+                    <label for="answer">Answer</label>
+                    <textarea id="answer" class="form-control" @bind="commenttoSend"></textarea>
                 </div>
+                <button @onclick="HandleEditSubmit" class="btn btn-primary m-auto">Save Changes</button>
+                <br />
             </div>
+
         </div>
     </div>
 </div>
@@ -237,6 +306,7 @@
 @code {
     private bool _hasNavigated = false;
     private bool showModal = false;
+    private string adminEmail = string.Empty;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !_hasNavigated)
@@ -247,17 +317,26 @@
                 _hasNavigated = true;
                 NavigationManager.NavigateTo("/");
             }
+            else
+            {
+                adminEmail = await localStorage.GetItemAsync<string>("email");
+            }
         }
     }
     private List<UserTable.UserGet> users = new List<UserTable.UserGet>();
     private List<Feedback> feedbacks = new List<Feedback>();
-
+    private List<Caminho> caminhos = new List<Caminho>();
+    private List<FeedbackUserGet> feedbacksforUser = new List<FeedbackUserGet>();
+    private List<Infraestrutura> infraestruturas = new List<Infraestrutura>();
+    private bool ecaminho = false;
     protected override async Task OnInitializedAsync()
     {
         users = await userService.GetUsersAsync();
         feedbacks = await feedbackService.GetFeedbacksAsync();
         feedbacks = feedbacks.OrderByDescending(f => f.dataHora).ToList();
-
+        feedbacksforUser = await feedbackService.GetFeedbacksForUser();
+        caminhos = await pathService.GetPathsAsync();
+        infraestruturas = await infraestruturaService.GetInfraestruturasAsync();
     }
     // The search query from the input
     private string searchQuery = string.Empty;
@@ -266,11 +345,102 @@
     {
         searchQuery = e.Value.ToString();
     }
+    private FeedbackUserGet feedbackToEdit = new FeedbackUserGet();
     private string commenttoSee;
-    private void changeComment(string comment)
+    private string commenttoSend = string.Empty;
+    private void changeComment(Feedback person)
     {
-        commenttoSee = comment;
+        commenttoSee = person.comentario;
+        int actualfeedbackuserId = -1;
+        FeedbackUserGet actualFeedback = feedbacksforUser.FirstOrDefault(p => p.feedbackId == person.id);
+        if(actualFeedback != null)
+        {
+            commenttoSend = actualFeedback.comentario;
+            actualfeedbackuserId = actualFeedback.id;
+        }
+        else{
+            commenttoSend = string.Empty;
+            actualfeedbackuserId = -1;
+        }
+        int adminIdtoSend = users.FirstOrDefault(p => p.email == adminEmail).usuarioId;
+        feedbackToEdit = new FeedbackUserGet
+            {
+                id = actualfeedbackuserId,
+                adminId = adminIdtoSend,
+                usuarioId = person.usuarioId,
+                feedbackId = person.id,
+                comentario = commenttoSend
+            };
         showModal = true;
+    }
+    private async Task HandleEditSubmit()
+    {
+        if (commenttoSend.Trim() != string.Empty)
+        {
+            feedbackToEdit.comentario = commenttoSend;
+            if (feedbackToEdit.id != -1)
+            {
+                var sucesso = await feedbackService.UpdateFeedbackForUser(feedbackToEdit);
+                if (sucesso)
+                {
+                    feedbacksforUser = await feedbackService.GetFeedbacksForUser();
+                    CloseModal(); // Fecha o modal após a edição
+                    startTimer("Resposta editada com sucesso!", "green");
+                }
+                else
+                {
+                    startTimer("Erro ao editar resposta.", "red");
+                }
+            }
+            else
+            {
+                FeedbackUser feedback = new FeedbackUser
+                    {
+                        adminId = feedbackToEdit.adminId,
+                        usuarioId = feedbackToEdit.usuarioId,
+                        feedbackId = feedbackToEdit.feedbackId,
+                        comentario = feedbackToEdit.comentario
+                    };
+                var sucesso = await feedbackService.CreateFeedbackForUser(feedback);
+                if (sucesso)
+                {
+                    feedbacksforUser = await feedbackService.GetFeedbacksForUser();
+                    CloseModal(); // Fecha o modal após a edição
+                    startTimer("Resposta criada com sucesso!", "green");
+                }
+                else
+                {
+                    startTimer("Erro ao criar resposta.", "red");
+                }
+            }
+            commenttoSend = string.Empty;
+        }
+        else
+        {
+            startTimer("A resposta não pode estar vazia.", "red");
+        }
+    }
+    private string message;
+    private CancellationTokenSource? cts;
+    private string messageColor = "green";
+    private async Task startTimer(string msg, string Color)
+    {
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        var token = cts.Token;
+        message = msg;
+        messageColor = Color;
+        StateHasChanged();
+        try
+        {
+            await Task.Delay(5000, token);
+            message = "";
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
     }
     private void CloseModal()
     {
@@ -278,12 +448,22 @@
     }
     // Get the filtered people based on the search query
     private IEnumerable<Feedback> FilteredPeople =>
-        feedbacks.Where(p => (users.FirstOrDefault(u => u.usuarioId == p.usuarioId)).email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.caminhoId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.avaliacao.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.dataHora.ToString("dd/MM/yy").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                        p.dataHora.ToString("HH:mm").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                          p.comentario.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    feedbacks.Where(p =>
+    {
+        var user = users.FirstOrDefault(u => u.usuarioId == p.usuarioId);
+        var path = caminhos.FirstOrDefault(i => i.id == p.caminhoId);
+        var origin = path != null ? infraestruturas.FirstOrDefault(u => u.id == path.origemId) : null;
+        var dest = path != null ? infraestruturas.FirstOrDefault(u => u.id == path.destinoId) : null;
+
+        return (user?.email?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               p.caminhoId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+               p.avaliacao.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+               p.dataHora.ToString("dd/MM/yy").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+               p.dataHora.ToString("HH:mm").Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+               (p.comentario?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (origin?.descricao?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (dest?.descricao?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false);
+    });
 
 }
 
